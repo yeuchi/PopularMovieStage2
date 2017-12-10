@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">popularmoviestage2</string>
+    <string name="sort_popular">Popular</string>
+    <string name="sort_top_rated">Top Rated</string>
+    <string name="network_error">Please check network..</string>
+</resources>
