@@ -7,11 +7,17 @@
         android:id="@+id/sort_popular"
         android:orderInCategory="1"
         android:title="@string/sort_popular"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
 
     <item
         android:id="@+id/sort_top_rated"
         android:orderInCategory="1"
         android:title="@string/sort_top_rated"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/sort_favorite"
+        android:orderInCategory="1"
+        android:title="@string/sort_favorite"
+        app:showAsAction="never"/>
 </menu>

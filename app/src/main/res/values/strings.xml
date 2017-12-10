@@ -1,6 +1,10 @@
 <resources>
-    <string name="app_name">popularmoviestage2</string>
+    <string name="app_name">PopularMoveStage2</string>
     <string name="sort_popular">Popular</string>
     <string name="sort_top_rated">Top Rated</string>
+    <string name="sort_favorite">Favorite</string>
     <string name="network_error">Please check network..</string>
+    <string name="mark_as_favorite">Mark as Favorite</string>
+    <string name="trailer_header">Trailers:</string>
+    <string name="plot_header">Plot:</string>
 </resources>

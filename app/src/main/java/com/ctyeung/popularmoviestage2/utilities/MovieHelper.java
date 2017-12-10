@@ -16,14 +16,18 @@ public class MovieHelper {
     public static final String KEY_ORIGINAL_TITLE = "original_title";
     public static final String KEY_PLOT = "overview";
     public static final String KEY_RELEASE_DATE = "release_date";
+    public static final String KEY_RUNTIME = "runtime";
     public static final String KEY_VOTE_AVERAGE = "vote_average";
+    public static final String KEY_TRAILER = "key";
+    public static final String KEY_ID = "id";
+
     public final static String BASE_POSTER_URL = "http://image.tmdb.org/t/p/";
     public final static String PARAM_API_VIDEO = "video";
     public final static String PARAM_API_REVIEW = "review";
     public final static String PARAM_API_V = "v";
 
     public final static int INDEX_THUMBNAIL = 5;
-    public final static int INDEX_DETAIL = 5;
+    public final static int INDEX_DETAIL = 3;
 
     public final static String BASE_YOUTUBE_URL = "https://www.youtube.com/watch?v=";
 

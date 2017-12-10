@@ -21,6 +21,8 @@ public class DetailActivity extends AppCompatActivity {
     private TextView tvPlot;
     private TextView tv_rating;
     private TextView tv_release_date;
+    private TextView tv_runtime;
+    private TextView tvTrailer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +33,9 @@ public class DetailActivity extends AppCompatActivity {
         ivPoster = (ImageView)findViewById(R.id.iv_poster_image);
         tvPlot = (TextView)findViewById(R.id.tv_plot);
         tv_rating = (TextView)findViewById(R.id.tv_rating);
+        tv_runtime = (TextView)findViewById(R.id.tv_runtime);
         tv_release_date = (TextView)findViewById(R.id.tv_release_date);
+        tvTrailer = (TextView)findViewById(R.id.tv_trailer);
 
         initializeElements();
     }
@@ -41,17 +45,25 @@ public class DetailActivity extends AppCompatActivity {
         String str = this.getIntent().getStringExtra(Intent.EXTRA_TEXT);
         JSONObject json = parseJson(str);
 
+        String id = parseValueByKey(json, MovieHelper.KEY_ID);
+
         String voteAverage = parseValueByKey(json, MovieHelper.KEY_VOTE_AVERAGE);
         tv_rating.setText("Vote Average: " + voteAverage);
 
         String date = parseValueByKey(json, MovieHelper.KEY_RELEASE_DATE);
         tv_release_date.setText("Date: " + date);
 
+        String runtime = parseValueByKey(json, MovieHelper.KEY_RUNTIME);
+        tv_runtime.setText("Runtime: " + runtime + "min");
+
         String plot = parseValueByKey(json, MovieHelper.KEY_PLOT);
-        tvPlot.setText("Plot: " + plot);
+        tvPlot.setText(plot);
 
         String title = parseValueByKey(json, MovieHelper.KEY_ORIGINAL_TITLE);
         tvTitle.setText("Title: " + title);
+
+        String trailer = parseValueByKey(json, MovieHelper.KEY_TRAILER);
+        tvTrailer.setText(trailer);
 
         Context context = getApplicationContext();
 
