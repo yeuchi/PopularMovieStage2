@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_display_progress);
         tv_network_error_display = (TextView) findViewById(R.id.tv_network_error_display);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         mNumbersList.setLayoutManager(layoutManager);
         listener = this;
 

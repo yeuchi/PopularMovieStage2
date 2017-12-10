@@ -115,7 +115,7 @@ public class NetworkUtils {
 
         return url;
     }
-    
+
     /**
      * This method returns the entire result from the HTTP response.
      *
