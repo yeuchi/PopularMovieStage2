@@ -2,16 +2,24 @@ package com.ctyeung.popularmoviestage2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ctyeung.popularmoviestage2.utilities.JSONhelper;
+import com.ctyeung.popularmoviestage2.utilities.NetworkUtils;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.ctyeung.popularmoviestage2.utilities.MovieHelper;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.URL;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -21,8 +29,10 @@ public class DetailActivity extends AppCompatActivity {
     private TextView tvPlot;
     private TextView tv_rating;
     private TextView tv_release_date;
-    private TextView tv_runtime;
     private TextView tvTrailer;
+
+    protected String id;
+    private JSONArray jsonArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +43,6 @@ public class DetailActivity extends AppCompatActivity {
         ivPoster = (ImageView)findViewById(R.id.iv_poster_image);
         tvPlot = (TextView)findViewById(R.id.tv_plot);
         tv_rating = (TextView)findViewById(R.id.tv_rating);
-        tv_runtime = (TextView)findViewById(R.id.tv_runtime);
         tv_release_date = (TextView)findViewById(R.id.tv_release_date);
         tvTrailer = (TextView)findViewById(R.id.tv_trailer);
 
@@ -45,7 +54,7 @@ public class DetailActivity extends AppCompatActivity {
         String str = this.getIntent().getStringExtra(Intent.EXTRA_TEXT);
         JSONObject json = parseJson(str);
 
-        String id = parseValueByKey(json, MovieHelper.KEY_ID);
+        id = parseValueByKey(json, MovieHelper.KEY_ID);
 
         String voteAverage = parseValueByKey(json, MovieHelper.KEY_VOTE_AVERAGE);
         tv_rating.setText("Vote Average: " + voteAverage);
@@ -53,17 +62,11 @@ public class DetailActivity extends AppCompatActivity {
         String date = parseValueByKey(json, MovieHelper.KEY_RELEASE_DATE);
         tv_release_date.setText("Date: " + date);
 
-        String runtime = parseValueByKey(json, MovieHelper.KEY_RUNTIME);
-        tv_runtime.setText("Runtime: " + runtime + "min");
-
         String plot = parseValueByKey(json, MovieHelper.KEY_PLOT);
         tvPlot.setText(plot);
 
         String title = parseValueByKey(json, MovieHelper.KEY_ORIGINAL_TITLE);
         tvTitle.setText("Title: " + title);
-
-        String trailer = parseValueByKey(json, MovieHelper.KEY_TRAILER);
-        tvTrailer.setText(trailer);
 
         Context context = getApplicationContext();
 
@@ -88,6 +91,8 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 });
 
+        requestVideos();
+        requestReviews();
     }
 
     protected JSONObject parseJson(String str)
@@ -118,5 +123,61 @@ public class DetailActivity extends AppCompatActivity {
             ex.printStackTrace();
         }
         return str;
+    }
+
+    protected void requestVideos()
+    {
+        URL url = NetworkUtils.buildVideoUrl(id);
+        new DetailActivity.GithubQueryTask().execute(url);
+    }
+
+    protected void requestReviews()
+    {
+        URL url = NetworkUtils.buildReviewUrl(id);
+        new DetailActivity.GithubQueryTask().execute(url);
+    }
+
+    public class GithubQueryTask extends AsyncTask<URL, Void, String> {
+        @Override
+        protected String doInBackground(URL... urls) {
+            URL searchUrl = urls[0];
+            String githubSearchResults = null;
+            try
+            {
+                githubSearchResults = NetworkUtils.getResponseFromHttpUrl(searchUrl);
+            }
+            catch (IOException ex)
+            {
+                ex.printStackTrace();
+            }
+            return githubSearchResults;
+        }
+
+        protected void onPreExecute()
+        {
+            super.onPreExecute();
+        }
+
+        protected void onPostExecute(String str)
+        {
+            // *** parse str type for video or review
+            JSONObject json = JSONhelper.parseJson(str);
+            if(null != json)
+            {
+                jsonArray = JSONhelper.getJsonArray(json, "results");
+                int size = jsonArray.length();
+
+                if(null!=jsonArray && size>0)
+                {
+                    // *** need to replace this with list
+                    String trailer = parseValueByKey(json, MovieHelper.KEY_TRAILER);
+                    tvTrailer.setText(trailer);
+                }
+            }
+            else
+            {
+                // display none ?  or do nothing ?
+            }
+        }
     }
 }

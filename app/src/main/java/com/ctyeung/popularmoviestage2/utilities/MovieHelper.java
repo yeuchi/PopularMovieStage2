@@ -5,7 +5,7 @@ package com.ctyeung.popularmoviestage2.utilities;
  */
 
 public class MovieHelper {
-    final public static String BASE_URL = "http://api.themoviedb.org/3/movie/";
+    final public static String BASE_URL = "https://api.themoviedb.org/3/movie/";
     final public static String API_KEY_VALUE = "838bb81a894bc77678913ab8b239cfb3";
     final public static String PARAM_API_KEY = "api_key";
 
@@ -22,8 +22,8 @@ public class MovieHelper {
     public static final String KEY_ID = "id";
 
     public final static String BASE_POSTER_URL = "http://image.tmdb.org/t/p/";
-    public final static String PARAM_API_VIDEO = "video";
-    public final static String PARAM_API_REVIEW = "review";
+    public final static String PARAM_API_VIDEO = "videos";
+    public final static String PARAM_API_REVIEW = "reviews";
     public final static String PARAM_API_V = "v";
 
     public final static int INDEX_THUMBNAIL = 5;

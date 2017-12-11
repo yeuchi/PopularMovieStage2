@@ -54,13 +54,12 @@ public class NetworkUtils {
         return url;
     }
 
-    public static URL buildVideoUrl(String id,
-                                    String value)
+    public static URL buildVideoUrl(String id)
     {
-        String str = MovieHelper.BASE_URL +"/" + id.toString() + "/" + MovieHelper.PARAM_API_VIDEO;
+        String str = MovieHelper.BASE_URL + id.toString() + "/" + MovieHelper.PARAM_API_VIDEO;
         Uri builtUri = Uri.parse(str)
                 .buildUpon()
-                .appendQueryParameter(MovieHelper.PARAM_API_KEY, value)
+                .appendQueryParameter(MovieHelper.PARAM_API_KEY, MovieHelper.API_KEY_VALUE)
                 .build();
 
         URL url = null;
@@ -75,12 +74,12 @@ public class NetworkUtils {
         return url;
     }
 
-    public static URL buildYoutubeUrl(String value)
+    public static URL buildYoutubeUrl(String youtubeId)
     {
         String str = MovieHelper.BASE_YOUTUBE_URL;
         Uri builtUri = Uri.parse(str)
                 .buildUpon()
-                .appendQueryParameter(MovieHelper.PARAM_API_V, value)
+                .appendQueryParameter(MovieHelper.PARAM_API_V, youtubeId)
                 .build();
 
         URL url = null;
@@ -95,13 +94,12 @@ public class NetworkUtils {
         return url;
     }
 
-    public static URL buildReviewUrl(String id,
-                                     String value)
+    public static URL buildReviewUrl(String id)
     {
-        String str = MovieHelper.BASE_URL +"/" + id.toString() + "/" + MovieHelper.PARAM_API_REVIEW;
+        String str = MovieHelper.BASE_URL + id.toString() + "/" + MovieHelper.PARAM_API_REVIEW;
         Uri builtUri = Uri.parse(str)
                 .buildUpon()
-                .appendQueryParameter(MovieHelper.PARAM_API_KEY, value)
+                .appendQueryParameter(MovieHelper.PARAM_API_KEY, MovieHelper.API_KEY_VALUE)
                 .build();
 
         URL url = null;
