@@ -169,15 +169,29 @@ public class DetailActivity extends AppCompatActivity {
 
                 if(null!=jsonArray && size>0)
                 {
-                    // *** need to replace this with list
-                    String trailer = parseValueByKey(json, MovieHelper.KEY_TRAILER);
-                    tvTrailer.setText(trailer);
+                    if(isVideo(str))
+                    {
+                        // list adaptor for trailers
+                        String trailer = parseValueByKey(json, MovieHelper.KEY_TRAILER);
+                        tvTrailer.setText(trailer);
+                    }
+                    else
+                    {
+                        // list adaptor for reviews
+                    }
+
                 }
             }
             else
             {
                 // display none ?  or do nothing ?
             }
+        }
+
+        protected boolean isVideo(String str)
+        {
+            boolean isVideo = (str.indexOf("key")>0)?true:false;
+            return isVideo;
         }
     }
 }
