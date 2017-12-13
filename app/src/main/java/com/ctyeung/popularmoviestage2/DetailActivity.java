@@ -5,9 +5,13 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.net.Uri;
 
 import com.ctyeung.popularmoviestage2.utilities.JSONhelper;
 import com.ctyeung.popularmoviestage2.utilities.NetworkUtils;
@@ -16,20 +20,25 @@ import com.squareup.picasso.Picasso;
 import com.ctyeung.popularmoviestage2.utilities.MovieHelper;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements com.ctyeung.popularmoviestage2.ListAdapter.ListItemClickListener {
 
+    private ListAdapter mAdapter;
+    private RecyclerView mReviewList;
+    private RecyclerView mTrailerList;
+    private Toast mtoast;
+    private ListAdapter.ListItemClickListener listener;
 
     private TextView tvTitle;
     private ImageView ivPoster;
     private TextView tvPlot;
     private TextView tv_rating;
     private TextView tv_release_date;
-    private TextView tvTrailer;
 
     protected String id;
     private JSONArray jsonArray;
@@ -44,7 +53,13 @@ public class DetailActivity extends AppCompatActivity {
         tvPlot = (TextView)findViewById(R.id.tv_plot);
         tv_rating = (TextView)findViewById(R.id.tv_rating);
         tv_release_date = (TextView)findViewById(R.id.tv_release_date);
-        tvTrailer = (TextView)findViewById(R.id.tv_trailer);
+
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 1);
+        mReviewList = (RecyclerView) findViewById(R.id.rv_reviews);
+        mReviewList.setLayoutManager(layoutManager);
+
+        mTrailerList = (RecyclerView) findViewById(R.id.rv_trailers);
+        mTrailerList.setLayoutManager(layoutManager);
 
         initializeElements();
     }
@@ -137,6 +152,30 @@ public class DetailActivity extends AppCompatActivity {
         new DetailActivity.GithubQueryTask().execute(url);
     }
 
+    @Override
+    public void onListItemClick(int clickItemIndex)
+    {
+        if(mtoast!=null)
+            mtoast.cancel();
+
+        // launch detail activity
+        JSONObject json = JSONhelper.parseJsonFromArray(jsonArray, clickItemIndex);
+
+        // launch web
+        String url = (true==MovieHelper.isVideo(json.toString()))?
+                MovieHelper.BASE_YOUTUBE_URL + JSONhelper.parseValueByKey(json, MovieHelper.KEY_TRAILER):
+                JSONhelper.parseValueByKey(json, MovieHelper.KEY_REVIEW_URL);
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
+
+        // toast
+        String toastmessage = "Item #" + clickItemIndex + "clicked";
+        mtoast = Toast.makeText(this, toastmessage, Toast.LENGTH_LONG);
+        mtoast.show();
+    }
+
     public class GithubQueryTask extends AsyncTask<URL, Void, String> {
         @Override
         protected String doInBackground(URL... urls) {
@@ -162,36 +201,30 @@ public class DetailActivity extends AppCompatActivity {
         {
             // *** parse str type for video or review
             JSONObject json = JSONhelper.parseJson(str);
+            boolean typeVideo = MovieHelper.isVideo(str);
+
             if(null != json)
             {
                 jsonArray = JSONhelper.getJsonArray(json, "results");
                 int size = jsonArray.length();
 
-                if(null!=jsonArray && size>0)
-                {
-                    if(isVideo(str))
-                    {
-                        // list adaptor for trailers
-                        String trailer = parseValueByKey(json, MovieHelper.KEY_TRAILER);
-                        tvTrailer.setText(trailer);
-                    }
-                    else
-                    {
-                        // list adaptor for reviews
-                    }
+                mAdapter = new com.ctyeung.popularmoviestage2.ListAdapter(size, listener, jsonArray, typeVideo);
 
+                if(typeVideo)
+                {
+                    mTrailerList.setAdapter(mAdapter);
+                    mTrailerList.setHasFixedSize(true);
+                }
+                else
+                {
+                    mReviewList.setAdapter(mAdapter);
+                    mReviewList.setHasFixedSize(true);
                 }
             }
             else
             {
-                // display none ?  or do nothing ?
-            }
-        }
 
-        protected boolean isVideo(String str)
-        {
-            boolean isVideo = (str.indexOf("key")>0)?true:false;
-            return isVideo;
+            }
         }
     }
 }

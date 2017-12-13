@@ -19,6 +19,8 @@ public class MovieHelper {
     public static final String KEY_RUNTIME = "runtime";
     public static final String KEY_VOTE_AVERAGE = "vote_average";
     public static final String KEY_TRAILER = "key";
+    public static final String KEY_AUTHOR = "author";
+    public static final String KEY_REVIEW_URL = "url";
     public static final String KEY_ID = "id";
 
     public final static String BASE_POSTER_URL = "http://image.tmdb.org/t/p/";
@@ -56,5 +58,11 @@ public class MovieHelper {
             case 6:
                 return "original/";
         }
+    }
+
+    public static boolean isVideo(String str)
+    {
+        boolean bRet = (str.indexOf("key")>0)?true:false;
+        return bRet;
     }
 }

@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
