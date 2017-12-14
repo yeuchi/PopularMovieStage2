@@ -54,12 +54,13 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
         tv_rating = (TextView)findViewById(R.id.tv_rating);
         tv_release_date = (TextView)findViewById(R.id.tv_release_date);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 1);
+        GridLayoutManager reviewManager = new GridLayoutManager(this, 1);
         mReviewList = (RecyclerView) findViewById(R.id.rv_reviews);
-        mReviewList.setLayoutManager(layoutManager);
+        mReviewList.setLayoutManager(reviewManager);
 
+        GridLayoutManager trailerManager = new GridLayoutManager(this, 1);
         mTrailerList = (RecyclerView) findViewById(R.id.rv_trailers);
-        mTrailerList.setLayoutManager(layoutManager);
+        mTrailerList.setLayoutManager(trailerManager);
 
         initializeElements();
     }
