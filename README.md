@@ -4,6 +4,8 @@
 - To fetch reviews you will want to make a request to the /movie/{id}/reviews endpoint
 - You should use an Intent to open a youtube link in either the native app or a web browser of choice.
 
+![screen shot 2017-12-14 at 6 29 29 pm](https://user-images.githubusercontent.com/1282659/34021107-95ae09ea-e0fd-11e7-9cc2-16b6978b7859.png)
+
 ### Common Project Requirements
 
 ### MEETS SPECIFICATIONS
