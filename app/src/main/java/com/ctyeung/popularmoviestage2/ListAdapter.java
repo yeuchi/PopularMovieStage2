@@ -43,7 +43,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.NumberViewHold
 
     public interface ListItemClickListener
     {
-        void onListItemClick(int clickItemIndex);
+        void onListItemClick(int clickItemIndex, boolean isVideo);
     }
 
     public ListAdapter(int numberOfItems,
@@ -142,7 +142,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.NumberViewHold
         public void onClick(View view)
         {
             int clickPosition = getAdapterPosition();
-            mOnClickListener.onListItemClick(clickPosition);
+            mOnClickListener.onListItemClick(clickPosition, mIsVideo);
         }
 
     }

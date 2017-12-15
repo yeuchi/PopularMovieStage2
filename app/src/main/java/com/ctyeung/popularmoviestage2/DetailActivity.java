@@ -41,7 +41,8 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
     private TextView tv_release_date;
 
     protected String id;
-    private JSONArray jsonArray;
+    private JSONArray trailerJsonArray;
+    private JSONArray reviewJsonArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,7 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
         mTrailerList = (RecyclerView) findViewById(R.id.rv_trailers);
         mTrailerList.setLayoutManager(trailerManager);
 
+        listener = this;
         initializeElements();
     }
 
@@ -154,16 +156,19 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
     }
 
     @Override
-    public void onListItemClick(int clickItemIndex)
+    public void onListItemClick(int clickItemIndex,
+                                boolean isVideo)
     {
         if(mtoast!=null)
             mtoast.cancel();
 
         // launch detail activity
+
+        JSONArray jsonArray = (isVideo)? trailerJsonArray : reviewJsonArray;
         JSONObject json = JSONhelper.parseJsonFromArray(jsonArray, clickItemIndex);
 
         // launch web
-        String url = (true==MovieHelper.isVideo(json.toString()))?
+        String url = (isVideo)?
                 MovieHelper.BASE_YOUTUBE_URL + JSONhelper.parseValueByKey(json, MovieHelper.KEY_TRAILER):
                 JSONhelper.parseValueByKey(json, MovieHelper.KEY_REVIEW_URL);
 
@@ -206,18 +211,20 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
 
             if(null != json)
             {
-                jsonArray = JSONhelper.getJsonArray(json, "results");
+                JSONArray jsonArray = JSONhelper.getJsonArray(json, "results");
                 int size = jsonArray.length();
 
                 mAdapter = new com.ctyeung.popularmoviestage2.ListAdapter(size, listener, jsonArray, typeVideo);
 
                 if(typeVideo)
                 {
+                    trailerJsonArray = jsonArray;
                     mTrailerList.setAdapter(mAdapter);
                     mTrailerList.setHasFixedSize(true);
                 }
                 else
                 {
+                    reviewJsonArray = jsonArray;
                     mReviewList.setAdapter(mAdapter);
                     mReviewList.setHasFixedSize(true);
                 }
