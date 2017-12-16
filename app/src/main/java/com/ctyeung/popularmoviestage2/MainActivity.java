@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.ctyeung.popularmoviestage2.utilities.JSONhelper;
 import java.io.IOException;
 import java.net.URL;
+import android.content.res.Configuration;
 
 import com.ctyeung.popularmoviestage2.utilities.MovieHelper;
 import com.ctyeung.popularmoviestage2.utilities.NetworkUtils;
@@ -43,11 +44,27 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_display_progress);
         tv_network_error_display = (TextView) findViewById(R.id.tv_network_error_display);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+
+        GridLayoutManager layoutManager = new GridLayoutManager(this, NumberColumns());
         mNumbersList.setLayoutManager(layoutManager);
         listener = this;
 
         requestMovie(MovieHelper.SORT_POPULAR);
+    }
+
+    private int NumberColumns()
+    {
+        int orientation = getResources().getConfiguration().orientation;
+
+        switch (orientation)
+        {
+            case Configuration.ORIENTATION_LANDSCAPE:
+               return 3;
+
+            default:
+            case Configuration.ORIENTATION_PORTRAIT:
+                return 2;
+        }
     }
 
     @Override
