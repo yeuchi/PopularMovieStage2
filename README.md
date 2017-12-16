@@ -17,7 +17,7 @@ You’ll add more information to your movie details view:
 - To fetch reviews you will want to make a request to the /movie/{id}/reviews endpoint
 - You should use an Intent to open a youtube link in either the native app or a web browser of choice.
 
-1080 x 1920 - 1 size only
+### 1080 x 1920 - 1 size only
 
 ![screen shot 2017-12-14 at 6 40 21 pm](https://user-images.githubusercontent.com/1282659/34021237-46d6f678-e0fe-11e7-9793-7cc41c5cb069.png)
 ![screen shot 2017-12-14 at 6 37 14 pm](https://user-images.githubusercontent.com/1282659/34021156-e60eec88-e0fd-11e7-8a34-8e6642d5d0c6.png)
