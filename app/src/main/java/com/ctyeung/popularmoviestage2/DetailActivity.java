@@ -25,6 +25,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import android.widget.Button;
 
 public class DetailActivity extends AppCompatActivity implements com.ctyeung.popularmoviestage2.ListAdapter.ListItemClickListener {
 
@@ -39,6 +40,7 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
     private TextView tvPlot;
     private TextView tv_rating;
     private TextView tv_release_date;
+    private Button btnFavorite;
 
     protected String id;
     private JSONArray trailerJsonArray;
@@ -108,6 +110,14 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
                         //Toast.makeText(getApplicationContext(), "failed", Toast.LENGTH_SHORT).show();
                     }
                 });
+
+        final Button button = (Button) findViewById(R.id.btnFavorite);
+        button.setOnClickListener(new View.OnClickListener() {
+                                      public void onClick(View v) {
+                                          // Perform action on click -- favorite movie selected !
+
+                                      }
+                                  });
 
         requestVideos();
         requestReviews();

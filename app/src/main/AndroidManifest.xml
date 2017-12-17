@@ -3,6 +3,7 @@
     package="com.ctyeung.popularmoviestage2">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.ctyeung.popularmoviestage2.data.TERMS_READ" />
 
     <application
         android:allowBackup="true"
@@ -11,6 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,7 +20,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".DetailActivity"></activity>
+
+        <!-- Register the TaskContentProvider -->
+        <!-- Set name, authorities, and exported attributes -->
+        <!-- exported = false limits access to this ContentProvider to only this app -->
+        <provider
+            android:name="com.ctyeung.popularmoviestage2.data.MovieContentProvider"
+            android:authorities="com.ctyeung.popularmoviestage2"
+            android:exported="false"/>
 
     </application>
 

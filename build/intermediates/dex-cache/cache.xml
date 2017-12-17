@@ -3,12 +3,39 @@
 
     <item
         is-multidex="true"
+        jar="/Users/ctyeung/.android/build-cache/e7b9467c043fea76ba67d8afd31f441ec438abb0/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.1"
+        sha1="7f2f348b830f292429db987f74ba3e67c6752322">
+        <dex dex="/Users/ctyeung/Documents/Udacity/PopularMovieStage2/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_a961b26609f456f27914f02fbbb0133316b3a583/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Users/ctyeung/.android/build-cache/f43119728f9557663629912ca0b369b89d7e7a0c/output/jars/classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.1"
+        sha1="68956f5ba1517b7a3d513ba540548e257741cbae">
+        <dex dex="/Users/ctyeung/Documents/Udacity/PopularMovieStage2/app/build/intermediates/transforms/dex/debug/folders/1000/10/classes_293de5c6c2ffbb7d2ef2ba64710bb1c1a762a058/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="/Users/ctyeung/Documents/Udacity/PopularMovieStage2/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
         jumboMode="true"
         optimize="true"
         revision="25.0.1"
-        sha1="112813dcc53784e68db8b5c757f6abfef589a472">
+        sha1="a8324b4635a1dc9dd531e94c91ca9ab7e12a100c">
         <dex dex="/Users/ctyeung/Documents/Udacity/PopularMovieStage2/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_3b26229d0b72a59292d9b8e7df2840742718872c/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/Applications/Android Studio.app/Contents/gradle/m2repository/com/android/databinding/baseLibrary/2.3.3/baseLibrary-2.3.3.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.1"
+        sha1="eb3399988a52099b0127e27fb5bed666eca86ace">
+        <dex dex="/Users/ctyeung/Documents/Udacity/PopularMovieStage2/app/build/intermediates/transforms/dex/debug/folders/1000/10/baseLibrary-2.3.3_a13c89973c1c8bce4f7e9a2f1b7ba7e93f86f6c7/classes.dex" />
     </item>
     <item
         is-multidex="true"
