@@ -1,5 +1,6 @@
 package com.ctyeung.popularmoviestage2;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -26,6 +27,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 import android.widget.Button;
+
+import com.ctyeung.popularmoviestage2.data.MovieContract;
+import com.ctyeung.popularmoviestage2.data.MovieDbHelper;
 
 public class DetailActivity extends AppCompatActivity implements com.ctyeung.popularmoviestage2.ListAdapter.ListItemClickListener {
 
@@ -112,9 +116,34 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
                 });
 
         final Button button = (Button) findViewById(R.id.btnFavorite);
+
+        // break this out -- asynch ??
         button.setOnClickListener(new View.OnClickListener() {
                                       public void onClick(View v) {
+
+                                          // get index and retrieve data from jsonArray
+                                          String title = "";
+                                          String detail = "";
+
+                                          /*
+                                           * query if favorite entry exists in db
+                                           * - if exists, delete it --> string: 'mark as favorite'
+                                           * - if not, insert it --> string: 'remove favorite'
+                                           */
+                                          boolean isFavorite = true;
+
                                           // Perform action on click -- favorite movie selected !
+                                          ContentValues contentValues = new ContentValues();
+                                          // Put the task description and selected mPriority into the ContentValues
+                                          contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, title);
+                                          contentValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE, isFavorite);
+                                          contentValues.put(MovieContract.MovieEntry.COLUMN_JSON_DETAIL, detail);
+
+                                          // Insert the content values via a ContentResolver
+                                          Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
+
+                                          if(uri != null)
+                                              Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
 
                                       }
                                   });
@@ -241,7 +270,7 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
             }
             else
             {
-
+                // display info explaining 'no trailer or review' available
             }
         }
     }
