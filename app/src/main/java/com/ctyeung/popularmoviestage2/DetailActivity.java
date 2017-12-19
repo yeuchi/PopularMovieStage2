@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.net.Uri;
+import android.database.Cursor;
 
 import com.ctyeung.popularmoviestage2.utilities.JSONhelper;
 import com.ctyeung.popularmoviestage2.utilities.NetworkUtils;
@@ -46,9 +47,14 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
     private TextView tv_release_date;
     private Button btnFavorite;
 
-    protected String id;
     private JSONArray trailerJsonArray;
     private JSONArray reviewJsonArray;
+
+    protected String _id;
+    private JSONObject _json;
+    private String _title;
+    private boolean _isFavorite;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,27 +82,41 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
     protected void initializeElements()
     {
         String str = this.getIntent().getStringExtra(Intent.EXTRA_TEXT);
-        JSONObject json = parseJson(str);
+        this._json = parseJson(str);
 
-        id = parseValueByKey(json, MovieHelper.KEY_ID);
+        this._id = parseValueByKey(this._json, MovieHelper.KEY_ID);
 
-        String voteAverage = parseValueByKey(json, MovieHelper.KEY_VOTE_AVERAGE);
+        String voteAverage = parseValueByKey(this._json, MovieHelper.KEY_VOTE_AVERAGE);
         tv_rating.setText("Vote Average: " + voteAverage);
 
-        String date = parseValueByKey(json, MovieHelper.KEY_RELEASE_DATE);
+        String date = parseValueByKey(this._json, MovieHelper.KEY_RELEASE_DATE);
         tv_release_date.setText("Date: " + date);
 
-        String plot = parseValueByKey(json, MovieHelper.KEY_PLOT);
+        String plot = parseValueByKey(this._json, MovieHelper.KEY_PLOT);
         tvPlot.setText(plot);
 
-        String title = parseValueByKey(json, MovieHelper.KEY_ORIGINAL_TITLE);
-        tvTitle.setText("Title: " + title);
+        this._title = parseValueByKey(this._json, MovieHelper.KEY_ORIGINAL_TITLE);
+        tvTitle.setText("Title: " + this._title);
+
+        // query db -- isFavorite if exists
+        String[] columns = {"title"};
+        String[] args = {this._title};
+        Cursor c = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+                                        columns,
+                                        "title=?",
+                                        args,
+                                        "title DESC");
+
+        // label button pending on query result
+        final Button button = (Button) findViewById(R.id.btnFavorite);
+        button.setOnClickListener(buttonListener);
+        setBtnFavoriteText();
 
         Context context = getApplicationContext();
 
         String url = MovieHelper.BASE_POSTER_URL +
                     MovieHelper.getSizeByIndex(MovieHelper.INDEX_DETAIL) +
-                    parseValueByKey(json, MovieHelper.KEY_POSTER_PATH);
+                    parseValueByKey(this._json, MovieHelper.KEY_POSTER_PATH);
 
         Picasso.with(context)
                 //.load("http://i.imgur.com/DvpvklR.png")
@@ -115,42 +135,50 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
                     }
                 });
 
-        final Button button = (Button) findViewById(R.id.btnFavorite);
-
-        // break this out -- asynch ??
-        button.setOnClickListener(new View.OnClickListener() {
-                                      public void onClick(View v) {
-
-                                          // get index and retrieve data from jsonArray
-                                          String title = "";
-                                          String detail = "";
-
-                                          /*
-                                           * query if favorite entry exists in db
-                                           * - if exists, delete it --> string: 'mark as favorite'
-                                           * - if not, insert it --> string: 'remove favorite'
-                                           */
-                                          boolean isFavorite = true;
-
-                                          // Perform action on click -- favorite movie selected !
-                                          ContentValues contentValues = new ContentValues();
-                                          // Put the task description and selected mPriority into the ContentValues
-                                          contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, title);
-                                          contentValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE, isFavorite);
-                                          contentValues.put(MovieContract.MovieEntry.COLUMN_JSON_DETAIL, detail);
-
-                                          // Insert the content values via a ContentResolver
-                                          Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
-
-                                          if(uri != null)
-                                              Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
-
-                                      }
-                                  });
-
         requestVideos();
         requestReviews();
     }
+
+    private void setBtnFavoriteText()
+    {
+        final Button button = (Button) findViewById(R.id.btnFavorite);
+        if(_isFavorite)
+        {
+
+        }
+        else
+        {
+
+        }
+    }
+
+    private View.OnClickListener buttonListener = new View.OnClickListener()
+    {
+        public void onClick(View v)
+        {
+            // Perform action on click -- favorite movie selected !
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, _title);
+            contentValues.put(MovieContract.MovieEntry.COLUMN_JSON_DETAIL, _json.toString());
+
+            Uri uri = null;
+
+            if(_isFavorite)
+            {
+                // delete
+                getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI, _title, null);
+            }
+            else
+            {
+                // Insert the content values via a ContentResolver
+                uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
+            }
+            setBtnFavoriteText();
+
+            if(uri != null)
+                Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
+        }
+    };
 
     protected JSONObject parseJson(String str)
     {
@@ -184,13 +212,13 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
 
     protected void requestVideos()
     {
-        URL url = NetworkUtils.buildVideoUrl(id);
+        URL url = NetworkUtils.buildVideoUrl(this._id);
         new DetailActivity.GithubQueryTask().execute(url);
     }
 
     protected void requestReviews()
     {
-        URL url = NetworkUtils.buildReviewUrl(id);
+        URL url = NetworkUtils.buildReviewUrl(this._id);
         new DetailActivity.GithubQueryTask().execute(url);
     }
 

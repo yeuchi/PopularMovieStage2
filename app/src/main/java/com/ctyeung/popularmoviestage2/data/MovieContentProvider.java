@@ -27,6 +27,8 @@ package com.ctyeung.popularmoviestage2.data;
         import android.support.annotation.NonNull;
         import com.ctyeung.popularmoviestage2.data.MovieContract;
         import com.ctyeung.popularmoviestage2.data.MovieDbHelper;
+
+        import static com.ctyeung.popularmoviestage2.data.MovieContract.MovieEntry.COLUMN_TITLE;
         import static com.ctyeung.popularmoviestage2.data.MovieContract.MovieEntry.TABLE_NAME;
         import android.content.ContentProvider;
 
@@ -41,7 +43,7 @@ public class MovieContentProvider extends ContentProvider {
     // It's convention to use 100, 200, 300, etc for directories,
     // and related ints (101, 102, ..) for items in that directory.
     public static final int MOVIES = 100;
-    public static final int MOVIE_WITH_ID = 101;
+    public static final int MOVIE_WITH_TITLE = 101;
 
     // CDeclare a static variable for the Uri matcher that you construct
     private static final UriMatcher sUriMatcher = buildUriMatcher();
@@ -62,7 +64,7 @@ public class MovieContentProvider extends ContentProvider {
           The two calls below add matches for the task directory and a single item by ID.
          */
         uriMatcher.addURI(MovieContract.AUTHORITY, MovieContract.PATH_MOVIES, MOVIES);
-        uriMatcher.addURI(MovieContract.AUTHORITY, MovieContract.PATH_MOVIES + "/#", MOVIE_WITH_ID);
+        uriMatcher.addURI(MovieContract.AUTHORITY, MovieContract.PATH_MOVIES + "/#", MOVIE_WITH_TITLE);
 
         return uriMatcher;
     }
@@ -84,7 +86,6 @@ public class MovieContentProvider extends ContentProvider {
         mMovieDbHelper = new MovieDbHelper(context);
         return true;
     }
-
 
     // Implement insert to handle requests to insert a single new row of data
     @Override
@@ -123,8 +124,11 @@ public class MovieContentProvider extends ContentProvider {
 
     // Implement query to handle requests for data by URI
     @Override
-    public Cursor query(@NonNull Uri uri, String[] projection, String selection,
-                        String[] selectionArgs, String sortOrder) {
+    public Cursor query(@NonNull Uri uri,       // table name
+                        String[] columns,       // ex. ["title"]
+                        String selection,       // ex. "title=?"
+                        String[] selectionArgs,   // ex. "Thor"
+                        String sortOrder) {     // ex. "title DESC"
 
         final SQLiteDatabase db = mMovieDbHelper.getWritableDatabase();
         int match = sUriMatcher.match(uri);
@@ -134,7 +138,7 @@ public class MovieContentProvider extends ContentProvider {
         {
             case MOVIES:
                 cursor = db.query(MovieContract.MovieEntry.TABLE_NAME,
-                        projection,
+                        columns,
                         selection,
                         selectionArgs,
                         null,
@@ -158,18 +162,13 @@ public class MovieContentProvider extends ContentProvider {
         final SQLiteDatabase db = mMovieDbHelper.getWritableDatabase();
 
         int match = sUriMatcher.match(uri);
-        // Keep track of the number of deleted tasks
         int tasksDeleted; // starts as 0
 
-        // Write the code to delete a single row of data
-        // [Hint] Use selections to delete an item by its row ID
         switch (match) {
-            // Handle the single item case, recognized by the ID included in the URI path
-            case MOVIE_WITH_ID:
-                // Get the task ID from the URI path
-                String id = uri.getPathSegments().get(1);
-                // Use selections/selectionArgs to filter for this ID
-                tasksDeleted = db.delete(TABLE_NAME, "_id=?", new String[]{id});
+            case MOVIE_WITH_TITLE:
+                String title = uri.getPathSegments().get(1);
+                //db.execSQL("DELETE FROM " + TABLE_NAME+ " WHERE "+COLUMN_TITLE+"='"+title+"'");
+                tasksDeleted = db.delete(TABLE_NAME, COLUMN_TITLE + "=" + title, null);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

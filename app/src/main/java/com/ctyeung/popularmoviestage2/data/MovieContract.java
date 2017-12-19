@@ -44,7 +44,6 @@ public class MovieContract {
         // Since TaskEntry implements the interface "BaseColumns", it has an automatically produced
         // "_ID" column in addition to the two below
         public static final String COLUMN_TITLE = "title";
-        public static final String COLUMN_FAVORITE = "favorite";
         public static final String COLUMN_JSON_DETAIL = "jsonDetail";
 
 
@@ -55,19 +54,19 @@ public class MovieContract {
         Note: Because this implements BaseColumns, the _id column is generated automatically
 
         tasks
-         - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        | _id  |    TITLE          |    FAVORITE   |  JSON INFO  |
-         - - - - - - - - - - - - - - - - - - - - - -
-        |  1   |  Justice League   |       true    |  {.....}    |
-         - - - - - - - - - - - - - - - - - - - - - -
-        |  2   |   THOR            |       true    |  {.....}    |
-         - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+         - - - - - - - - - - - - - - - - - - - - -
+        | _id  |    TITLE          |  JSON INFO  |
+         - - - - - - - - - - - - - - - - - - - - -
+        |  1   |  Justice League   |  {.....}    |
+         - - - - - - - - - - - - - - - - - - - - -
+        |  2   |   THOR            |  {.....}    |
+         - - - - - - - - - - - - - - - - - - - - -
         .
         .
         .
-         - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        | 30  |   Blade Runner     |      false    |   {.....}   |
-         - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+         - - - - - - - - - - - - - - - - - - - - -
+        | 30  |   Blade Runner     |   {.....}   |
+         - - - - - - - - - - - - - - - - - - - - -
 
          */
 
