@@ -28,6 +28,26 @@ You’ll add more information to your movie details view:
 ![detail](https://user-images.githubusercontent.com/1282659/34073578-ec7a7f46-e261-11e7-81ab-acb66608f5b9.png)
 ![fork](https://user-images.githubusercontent.com/1282659/34073579-eedd7a90-e261-11e7-8a1d-2e0386371248.png)
 
+Below screenshots demonstrate content provider with SQLiteDatabase operators: 
+
+###query
+cursor = db.query(MovieContract.MovieEntry.TABLE_NAME,
+                        columns,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+
+###insert
+db.insert(TABLE_NAME, null, values);
+
+###delete
+db.execSQL("DELETE FROM " + TABLE_NAME+ " WHERE "+COLUMN_TITLE+"='"+selection+"'");
+
+![screen shot 2017-12-19 at 6 37 02 pm](https://user-images.githubusercontent.com/1282659/34185963-3c3d2f9a-e4ee-11e7-94f0-185cf6f608b1.png)
+![screen shot 2017-12-19 at 6 37 27 pm](https://user-images.githubusercontent.com/1282659/34185964-3c509076-e4ee-11e7-96c1-44732bf56dea.png)
+
 ### Common Project Requirements
 
 ### MEETS SPECIFICATIONS
