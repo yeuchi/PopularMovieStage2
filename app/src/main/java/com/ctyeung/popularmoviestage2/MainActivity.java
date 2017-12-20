@@ -29,13 +29,13 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity implements MovieGridAdapter.ListItemClickListener
 {
-    private MovieGridAdapter _adapter;
-    private RecyclerView _numbersList;
-    private Toast _toast;
-    private MovieGridAdapter.ListItemClickListener _listener;
-    private JSONArray _jsonArray;
-    private ProgressBar _loadingIndicator;
-    private TextView _tv_network_error_display;
+    private MovieGridAdapter mAdapter;
+    private RecyclerView mNumbersList;
+    private Toast mToast;
+    private MovieGridAdapter.ListItemClickListener mListener;
+    private JSONArray mJsonArray;
+    private ProgressBar mLoadingIndicator;
+    private TextView tvNetworkErrorDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -43,14 +43,14 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        _numbersList = (RecyclerView) findViewById(R.id.rv_movie);
-        _loadingIndicator = (ProgressBar) findViewById(R.id.pb_display_progress);
-        _tv_network_error_display = (TextView) findViewById(R.id.tv_network_error_display);
+        mNumbersList = (RecyclerView) findViewById(R.id.rv_movie);
+        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_display_progress);
+        tvNetworkErrorDisplay = (TextView) findViewById(R.id.tv_network_error_display);
 
 
         GridLayoutManager layoutManager = new GridLayoutManager(this, NumberColumns());
-        _numbersList.setLayoutManager(layoutManager);
-        _listener = this;
+        mNumbersList.setLayoutManager(layoutManager);
+        mListener = this;
 
         requestMovies(MovieHelper.SORT_POPULAR);
     }
@@ -111,13 +111,13 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
 
         if(cursor.getCount() > 0)
         {
-            _jsonArray = new JSONArray();
+            mJsonArray = new JSONArray();
             cursor.moveToFirst();
             while (cursor.isAfterLast() == false)
             {
                 String value = cursor.getString(2);
                 JSONObject json = JSONhelper.parseJson(value);
-                _jsonArray.put(json);
+                mJsonArray.put(json);
                 cursor.moveToNext();
             }
             populateMovieGrid();
@@ -153,53 +153,53 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
         protected void onPreExecute()
         {
             super.onPreExecute();
-            _loadingIndicator.setVisibility(View.VISIBLE);
-            _tv_network_error_display.setVisibility(View.INVISIBLE);
+            mLoadingIndicator.setVisibility(View.VISIBLE);
+            tvNetworkErrorDisplay.setVisibility(View.INVISIBLE);
         }
 
         protected void onPostExecute(String str)
         {
-            _loadingIndicator.setVisibility(View.INVISIBLE);
+            mLoadingIndicator.setVisibility(View.INVISIBLE);
             JSONObject json = JSONhelper.parseJson(str);
 
             if(null != json)
             {
-                _jsonArray = JSONhelper.getJsonArray(json, "results");
+                mJsonArray = JSONhelper.getJsonArray(json, "results");
 
-                if(null!=_jsonArray &&
-                        _jsonArray.length()>0)
+                if(null!=mJsonArray &&
+                        mJsonArray.length()>0)
                 {
                     populateMovieGrid();
                 }
             }
             else
-                _tv_network_error_display.setVisibility(View.VISIBLE);
+                tvNetworkErrorDisplay.setVisibility(View.VISIBLE);
         }
     }
 
     private void populateMovieGrid()
     {
-        int size = _jsonArray.length();
-        _adapter = new MovieGridAdapter(size, _listener, _jsonArray);
-        _numbersList.setAdapter(_adapter);
-        _numbersList.setHasFixedSize(true);
+        int size = mJsonArray.length();
+        mAdapter = new MovieGridAdapter(size, mListener, mJsonArray);
+        mNumbersList.setAdapter(mAdapter);
+        mNumbersList.setHasFixedSize(true);
     }
 
     @Override
     public void onListItemClick(int clickItemIndex)
     {
-        if(_toast!=null)
-            _toast.cancel();
+        if(mToast!=null)
+            mToast.cancel();
 
         // launch detail activity
-        JSONObject json = JSONhelper.parseJsonFromArray(_jsonArray, clickItemIndex);
+        JSONObject json = JSONhelper.parseJsonFromArray(mJsonArray, clickItemIndex);
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra(Intent.EXTRA_TEXT, json.toString());
         startActivity(intent);
 
         // toast
         String toastmessage = "Item #" + clickItemIndex + "clicked";
-        _toast = Toast.makeText(this, toastmessage, Toast.LENGTH_LONG);
-        _toast.show();
+        mToast = Toast.makeText(this, toastmessage, Toast.LENGTH_LONG);
+        mToast.show();
     }
 }

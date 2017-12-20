@@ -34,26 +34,26 @@ import com.ctyeung.popularmoviestage2.data.MovieDbHelper;
 
 public class DetailActivity extends AppCompatActivity implements com.ctyeung.popularmoviestage2.ListAdapter.ListItemClickListener {
 
-    private ListAdapter _adapter;
-    private RecyclerView _reviewList;
-    private RecyclerView _trailerList;
+    private ListAdapter mAdapter;
+    private RecyclerView mReviewList;
+    private RecyclerView mTrailerList;
     private Toast _toast;
-    private ListAdapter.ListItemClickListener _listener;
+    private ListAdapter.ListItemClickListener mListener;
 
-    private TextView _tvTitle;
-    private ImageView _ivPoster;
-    private TextView _tvPlot;
-    private TextView _tvRating;
-    private TextView _tvReleaseDate;
-    private Button _btnFavorite;
+    private TextView tvTitle;
+    private ImageView ivPoster;
+    private TextView tvPlot;
+    private TextView tvRating;
+    private TextView tvReleaseDate;
+    private Button btnFavorite;
 
-    private JSONArray _trailerJsonArray;
-    private JSONArray _reviewJsonArray;
+    private JSONArray mTrailerJsonArray;
+    private JSONArray mReviewJsonArray;
 
-    protected String _id;
-    private JSONObject _json;
-    private String _title;
-    private boolean _isFavorite = false;
+    protected String id;
+    private JSONObject json;
+    private String title;
+    private boolean isFavorite = false;
 
 
     @Override
@@ -61,53 +61,53 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        _tvTitle = (TextView)findViewById(R.id.tv_original_title);
-        _ivPoster = (ImageView)findViewById(R.id.iv_poster_image);
-        _tvPlot = (TextView)findViewById(R.id.tv_plot);
-        _tvRating = (TextView)findViewById(R.id.tv_rating);
-        _tvReleaseDate = (TextView)findViewById(R.id.tv_release_date);
+        tvTitle = (TextView)findViewById(R.id.tv_original_title);
+        ivPoster = (ImageView)findViewById(R.id.iv_poster_image);
+        tvPlot = (TextView)findViewById(R.id.tv_plot);
+        tvRating = (TextView)findViewById(R.id.tv_rating);
+        tvReleaseDate = (TextView)findViewById(R.id.tv_release_date);
 
         GridLayoutManager reviewManager = new GridLayoutManager(this, 1);
-        _reviewList = (RecyclerView) findViewById(R.id.rv_reviews);
-        _reviewList.setLayoutManager(reviewManager);
+        mReviewList = (RecyclerView) findViewById(R.id.rv_reviews);
+        mReviewList.setLayoutManager(reviewManager);
 
         GridLayoutManager trailerManager = new GridLayoutManager(this, 1);
-        _trailerList = (RecyclerView) findViewById(R.id.rv_trailers);
-        _trailerList.setLayoutManager(trailerManager);
+        mTrailerList = (RecyclerView) findViewById(R.id.rv_trailers);
+        mTrailerList.setLayoutManager(trailerManager);
 
-        _listener = this;
+        mListener = this;
         initializeElements();
     }
 
     protected void initializeElements()
     {
         String str = this.getIntent().getStringExtra(Intent.EXTRA_TEXT);
-        this._json = parseJson(str);
+        this.json = parseJson(str);
 
-        this._id = parseValueByKey(this._json, MovieHelper.KEY_ID);
+        this.id = parseValueByKey(this.json, MovieHelper.KEY_ID);
 
-        String voteAverage = parseValueByKey(this._json, MovieHelper.KEY_VOTE_AVERAGE);
-        _tvRating.setText("Vote Average: " + voteAverage);
+        String voteAverage = parseValueByKey(this.json, MovieHelper.KEY_VOTE_AVERAGE);
+        tvRating.setText("Vote Average: " + voteAverage);
 
-        String date = parseValueByKey(this._json, MovieHelper.KEY_RELEASE_DATE);
-        _tvReleaseDate.setText("Date: " + date);
+        String date = parseValueByKey(this.json, MovieHelper.KEY_RELEASE_DATE);
+        tvReleaseDate.setText("Date: " + date);
 
-        String plot = parseValueByKey(this._json, MovieHelper.KEY_PLOT);
-        _tvPlot.setText(plot);
+        String plot = parseValueByKey(this.json, MovieHelper.KEY_PLOT);
+        tvPlot.setText(plot);
 
-        this._title = parseValueByKey(this._json, MovieHelper.KEY_ORIGINAL_TITLE);
-        _tvTitle.setText("Title: " + this._title);
+        this.title = parseValueByKey(this.json, MovieHelper.KEY_ORIGINAL_TITLE);
+        tvTitle.setText("Title: " + this.title);
 
         // query db -- isFavorite if exists
         String[] columns = {"title"};
-        String[] args = {this._title};
+        String[] args = {this.title};
         Cursor cursor = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
                                         columns,
                                         "title=?",
                                         args,
                                         "title DESC");
 
-        this._isFavorite = (0==cursor.getCount())? false : true;
+        this.isFavorite = (0==cursor.getCount())? false : true;
 
         // label button pending on query result
         final Button button = (Button) findViewById(R.id.btnFavorite);
@@ -118,14 +118,14 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
 
         String url = MovieHelper.BASE_POSTER_URL +
                     MovieHelper.getSizeByIndex(MovieHelper.INDEX_DETAIL) +
-                    parseValueByKey(this._json, MovieHelper.KEY_POSTER_PATH);
+                    parseValueByKey(this.json, MovieHelper.KEY_POSTER_PATH);
 
         Picasso.with(context)
                 //.load("http://i.imgur.com/DvpvklR.png")
                 .load(url)
                 .placeholder(R.drawable.placeholder)   // optional
                 .error(R.drawable.placeholder)      // optional
-                .into(_ivPoster, new Callback() {
+                .into(ivPoster, new Callback() {
                     @Override
                     public void onSuccess() {
                         //Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
@@ -144,7 +144,7 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
     private void setBtnFavoriteText()
     {
         final Button button = (Button) findViewById(R.id.btnFavorite);
-        int stringIndex = (_isFavorite)?
+        int stringIndex = (isFavorite)?
                 R.string.remove_favorite:
                 R.string.mark_as_favorite;
 
@@ -157,15 +157,15 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
         {
             // Perform action on click -- favorite movie selected !
             ContentValues contentValues = new ContentValues();
-            contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, _title);
-            contentValues.put(MovieContract.MovieEntry.COLUMN_JSON_DETAIL, _json.toString());
+            contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, title);
+            contentValues.put(MovieContract.MovieEntry.COLUMN_JSON_DETAIL, json.toString());
 
             Uri uri = null;
 
-            if(_isFavorite)
+            if(isFavorite)
             {
                 // delete
-                getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI, _title, null);
+                getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI, title, null);
             }
             else
             {
@@ -173,7 +173,7 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
                 uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
             }
 
-            _isFavorite = !_isFavorite;
+            isFavorite = !isFavorite;
             setBtnFavoriteText();
 
             if(uri != null)
@@ -213,13 +213,13 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
 
     protected void requestVideos()
     {
-        URL url = NetworkUtils.buildVideoUrl(this._id);
+        URL url = NetworkUtils.buildVideoUrl(this.id);
         new DetailActivity.GithubQueryTask().execute(url);
     }
 
     protected void requestReviews()
     {
-        URL url = NetworkUtils.buildReviewUrl(this._id);
+        URL url = NetworkUtils.buildReviewUrl(this.id);
         new DetailActivity.GithubQueryTask().execute(url);
     }
 
@@ -232,7 +232,7 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
 
         // launch detail activity
 
-        JSONArray jsonArray = (isVideo)? _trailerJsonArray : _reviewJsonArray;
+        JSONArray jsonArray = (isVideo)? mTrailerJsonArray : mReviewJsonArray;
         JSONObject json = JSONhelper.parseJsonFromArray(jsonArray, clickItemIndex);
 
         // launch web
@@ -282,19 +282,19 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
                 JSONArray jsonArray = JSONhelper.getJsonArray(json, "results");
                 int size = jsonArray.length();
 
-                _adapter = new com.ctyeung.popularmoviestage2.ListAdapter(size, _listener, jsonArray, typeVideo);
+                mAdapter = new com.ctyeung.popularmoviestage2.ListAdapter(size, mListener, jsonArray, typeVideo);
 
                 if(typeVideo)
                 {
-                    _trailerJsonArray = jsonArray;
-                    _trailerList.setAdapter(_adapter);
-                    _trailerList.setHasFixedSize(true);
+                    mTrailerJsonArray = jsonArray;
+                    mTrailerList.setAdapter(mAdapter);
+                    mTrailerList.setHasFixedSize(true);
                 }
                 else
                 {
-                    _reviewJsonArray = jsonArray;
-                    _reviewList.setAdapter(_adapter);
-                    _reviewList.setHasFixedSize(true);
+                    mReviewJsonArray = jsonArray;
+                    mReviewList.setAdapter(mAdapter);
+                    mReviewList.setHasFixedSize(true);
                 }
             }
             else

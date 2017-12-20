@@ -9,9 +9,9 @@ import org.json.JSONObject;
 
 public class JSONArraySort
 {
-    protected JSONArray jsonArray;
-    protected String key;
-    protected JSONArray sorted;
+    private JSONArray jsonArray;
+    private String key;
+    private JSONArray sorted;
 
     public JSONArraySort(JSONArray jsonArray, String key)
     {
