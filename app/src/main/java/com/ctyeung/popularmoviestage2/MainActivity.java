@@ -26,13 +26,13 @@ import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity implements MovieGridAdapter.ListItemClickListener
 {
-    private MovieGridAdapter mAdapter;
-    private RecyclerView mNumbersList;
-    private Toast mtoast;
-    private MovieGridAdapter.ListItemClickListener listener;
-    private JSONArray jsonArray;
-    private ProgressBar mLoadingIndicator;
-    private TextView tv_network_error_display;
+    private MovieGridAdapter _adapter;
+    private RecyclerView _numbersList;
+    private Toast _toast;
+    private MovieGridAdapter.ListItemClickListener _listener;
+    private JSONArray _jsonArray;
+    private ProgressBar _loadingIndicator;
+    private TextView _tv_network_error_display;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -40,16 +40,16 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mNumbersList = (RecyclerView) findViewById(R.id.rv_movie);
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_display_progress);
-        tv_network_error_display = (TextView) findViewById(R.id.tv_network_error_display);
+        _numbersList = (RecyclerView) findViewById(R.id.rv_movie);
+        _loadingIndicator = (ProgressBar) findViewById(R.id.pb_display_progress);
+        _tv_network_error_display = (TextView) findViewById(R.id.tv_network_error_display);
 
 
         GridLayoutManager layoutManager = new GridLayoutManager(this, NumberColumns());
-        mNumbersList.setLayoutManager(layoutManager);
-        listener = this;
+        _numbersList.setLayoutManager(layoutManager);
+        _listener = this;
 
-        requestMovie(MovieHelper.SORT_POPULAR);
+        requestMovies(MovieHelper.SORT_POPULAR);
     }
 
     private int NumberColumns()
@@ -83,18 +83,27 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
         switch (itemId) {
 
             case R.id.sort_popular:
-                requestMovie(MovieHelper.SORT_POPULAR);
+                requestMovies(MovieHelper.SORT_POPULAR);
                 return true;
 
             case R.id.sort_top_rated:
-                requestMovie(MovieHelper.SORT_TOP_RATED);
+                requestMovies(MovieHelper.SORT_TOP_RATED);
+                return true;
+
+            case R.id.sort_favorite:
+                loadMovieFavorites();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    protected void requestMovie(String sortMethod)
+    protected void loadMovieFavorites()
+    {
+
+    }
+
+    protected void requestMovies(String sortMethod)
     {
         URL url = NetworkUtils.buildMainPageUrl(sortMethod);
         new GithubQueryTask().execute(url);
@@ -120,47 +129,53 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
         protected void onPreExecute()
         {
             super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-            tv_network_error_display.setVisibility(View.INVISIBLE);
+            _loadingIndicator.setVisibility(View.VISIBLE);
+            _tv_network_error_display.setVisibility(View.INVISIBLE);
         }
 
         protected void onPostExecute(String str)
         {
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
+            _loadingIndicator.setVisibility(View.INVISIBLE);
             JSONObject json = JSONhelper.parseJson(str);
 
             if(null != json)
             {
-                jsonArray = JSONhelper.getJsonArray(json, "results");
-                int size = jsonArray.length();
+                _jsonArray = JSONhelper.getJsonArray(json, "results");
 
-                if(null!=jsonArray && size>0)
+                if(null!=_jsonArray &&
+                        _jsonArray.length()>0)
                 {
-                    mAdapter = new MovieGridAdapter(size, listener, jsonArray);
-                    mNumbersList.setAdapter(mAdapter);
-                    mNumbersList.setHasFixedSize(true);
+                    populateMovieGrid();
                 }
             }
             else
-                tv_network_error_display.setVisibility(View.VISIBLE);
+                _tv_network_error_display.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void populateMovieGrid()
+    {
+        int size = _jsonArray.length();
+        _adapter = new MovieGridAdapter(size, _listener, _jsonArray);
+        _numbersList.setAdapter(_adapter);
+        _numbersList.setHasFixedSize(true);
     }
 
     @Override
     public void onListItemClick(int clickItemIndex)
     {
-        if(mtoast!=null)
-            mtoast.cancel();
+        if(_toast!=null)
+            _toast.cancel();
 
         // launch detail activity
-        JSONObject json = JSONhelper.parseJsonFromArray(jsonArray, clickItemIndex);
+        JSONObject json = JSONhelper.parseJsonFromArray(_jsonArray, clickItemIndex);
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra(Intent.EXTRA_TEXT, json.toString());
         startActivity(intent);
 
         // toast
         String toastmessage = "Item #" + clickItemIndex + "clicked";
-        mtoast = Toast.makeText(this, toastmessage, Toast.LENGTH_LONG);
-        mtoast.show();
+        _toast = Toast.makeText(this, toastmessage, Toast.LENGTH_LONG);
+        _toast.show();
     }
 }

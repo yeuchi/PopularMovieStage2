@@ -34,21 +34,21 @@ import com.ctyeung.popularmoviestage2.data.MovieDbHelper;
 
 public class DetailActivity extends AppCompatActivity implements com.ctyeung.popularmoviestage2.ListAdapter.ListItemClickListener {
 
-    private ListAdapter mAdapter;
-    private RecyclerView mReviewList;
-    private RecyclerView mTrailerList;
-    private Toast mtoast;
-    private ListAdapter.ListItemClickListener listener;
+    private ListAdapter _adapter;
+    private RecyclerView _reviewList;
+    private RecyclerView _trailerList;
+    private Toast _toast;
+    private ListAdapter.ListItemClickListener _listener;
 
-    private TextView tvTitle;
-    private ImageView ivPoster;
-    private TextView tvPlot;
-    private TextView tv_rating;
-    private TextView tv_release_date;
-    private Button btnFavorite;
+    private TextView _tvTitle;
+    private ImageView _ivPoster;
+    private TextView _tvPlot;
+    private TextView _tvRating;
+    private TextView _tvReleaseDate;
+    private Button _btnFavorite;
 
-    private JSONArray trailerJsonArray;
-    private JSONArray reviewJsonArray;
+    private JSONArray _trailerJsonArray;
+    private JSONArray _reviewJsonArray;
 
     protected String _id;
     private JSONObject _json;
@@ -61,21 +61,21 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        tvTitle = (TextView)findViewById(R.id.tv_original_title);
-        ivPoster = (ImageView)findViewById(R.id.iv_poster_image);
-        tvPlot = (TextView)findViewById(R.id.tv_plot);
-        tv_rating = (TextView)findViewById(R.id.tv_rating);
-        tv_release_date = (TextView)findViewById(R.id.tv_release_date);
+        _tvTitle = (TextView)findViewById(R.id.tv_original_title);
+        _ivPoster = (ImageView)findViewById(R.id.iv_poster_image);
+        _tvPlot = (TextView)findViewById(R.id.tv_plot);
+        _tvRating = (TextView)findViewById(R.id.tv_rating);
+        _tvReleaseDate = (TextView)findViewById(R.id.tv_release_date);
 
         GridLayoutManager reviewManager = new GridLayoutManager(this, 1);
-        mReviewList = (RecyclerView) findViewById(R.id.rv_reviews);
-        mReviewList.setLayoutManager(reviewManager);
+        _reviewList = (RecyclerView) findViewById(R.id.rv_reviews);
+        _reviewList.setLayoutManager(reviewManager);
 
         GridLayoutManager trailerManager = new GridLayoutManager(this, 1);
-        mTrailerList = (RecyclerView) findViewById(R.id.rv_trailers);
-        mTrailerList.setLayoutManager(trailerManager);
+        _trailerList = (RecyclerView) findViewById(R.id.rv_trailers);
+        _trailerList.setLayoutManager(trailerManager);
 
-        listener = this;
+        _listener = this;
         initializeElements();
     }
 
@@ -87,16 +87,16 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
         this._id = parseValueByKey(this._json, MovieHelper.KEY_ID);
 
         String voteAverage = parseValueByKey(this._json, MovieHelper.KEY_VOTE_AVERAGE);
-        tv_rating.setText("Vote Average: " + voteAverage);
+        _tvRating.setText("Vote Average: " + voteAverage);
 
         String date = parseValueByKey(this._json, MovieHelper.KEY_RELEASE_DATE);
-        tv_release_date.setText("Date: " + date);
+        _tvReleaseDate.setText("Date: " + date);
 
         String plot = parseValueByKey(this._json, MovieHelper.KEY_PLOT);
-        tvPlot.setText(plot);
+        _tvPlot.setText(plot);
 
         this._title = parseValueByKey(this._json, MovieHelper.KEY_ORIGINAL_TITLE);
-        tvTitle.setText("Title: " + this._title);
+        _tvTitle.setText("Title: " + this._title);
 
         // query db -- isFavorite if exists
         String[] columns = {"title"};
@@ -125,7 +125,7 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
                 .load(url)
                 .placeholder(R.drawable.placeholder)   // optional
                 .error(R.drawable.placeholder)      // optional
-                .into(ivPoster, new Callback() {
+                .into(_ivPoster, new Callback() {
                     @Override
                     public void onSuccess() {
                         //Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
@@ -227,12 +227,12 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
     public void onListItemClick(int clickItemIndex,
                                 boolean isVideo)
     {
-        if(mtoast!=null)
-            mtoast.cancel();
+        if(_toast!=null)
+            _toast.cancel();
 
         // launch detail activity
 
-        JSONArray jsonArray = (isVideo)? trailerJsonArray : reviewJsonArray;
+        JSONArray jsonArray = (isVideo)? _trailerJsonArray : _reviewJsonArray;
         JSONObject json = JSONhelper.parseJsonFromArray(jsonArray, clickItemIndex);
 
         // launch web
@@ -246,8 +246,8 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
 
         // toast
         String toastmessage = "Item #" + clickItemIndex + "clicked";
-        mtoast = Toast.makeText(this, toastmessage, Toast.LENGTH_LONG);
-        mtoast.show();
+        _toast = Toast.makeText(this, toastmessage, Toast.LENGTH_LONG);
+        _toast.show();
     }
 
     public class GithubQueryTask extends AsyncTask<URL, Void, String> {
@@ -282,19 +282,19 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
                 JSONArray jsonArray = JSONhelper.getJsonArray(json, "results");
                 int size = jsonArray.length();
 
-                mAdapter = new com.ctyeung.popularmoviestage2.ListAdapter(size, listener, jsonArray, typeVideo);
+                _adapter = new com.ctyeung.popularmoviestage2.ListAdapter(size, _listener, jsonArray, typeVideo);
 
                 if(typeVideo)
                 {
-                    trailerJsonArray = jsonArray;
-                    mTrailerList.setAdapter(mAdapter);
-                    mTrailerList.setHasFixedSize(true);
+                    _trailerJsonArray = jsonArray;
+                    _trailerList.setAdapter(_adapter);
+                    _trailerList.setHasFixedSize(true);
                 }
                 else
                 {
-                    reviewJsonArray = jsonArray;
-                    mReviewList.setAdapter(mAdapter);
-                    mReviewList.setHasFixedSize(true);
+                    _reviewJsonArray = jsonArray;
+                    _reviewList.setAdapter(_adapter);
+                    _reviewList.setHasFixedSize(true);
                 }
             }
             else

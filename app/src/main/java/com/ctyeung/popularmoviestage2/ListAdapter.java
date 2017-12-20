@@ -33,13 +33,13 @@ import com.ctyeung.popularmoviestage2.utilities.MovieHelper;
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.NumberViewHolder> {
 
     private static final String TAG = MovieGridAdapter.class.getSimpleName();
-    final private ListItemClickListener mOnClickListener;
+    final private ListItemClickListener _clickListener;
 
 
-    private static int viewHolderCount;
-    private int mNumberItems;
-    private JSONArray mJsonArray;
-    private boolean mIsVideo = false;
+    private static int _viewHolderCount;
+    private int _numberItems;
+    private JSONArray _jsonArray;
+    private boolean _isVideo = false;
 
     public interface ListItemClickListener
     {
@@ -51,11 +51,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.NumberViewHold
                        JSONArray jsonArray,
                        boolean isVideo) {
 
-        mJsonArray = jsonArray;
-        mNumberItems = numberOfItems;
-        mOnClickListener = listener;
-        viewHolderCount = 0;
-        mIsVideo = isVideo;
+        _jsonArray = jsonArray;
+        _numberItems = numberOfItems;
+        _clickListener = listener;
+        _viewHolderCount = 0;
+        _isVideo = isVideo;
     }
 
     @Override
@@ -69,14 +69,14 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.NumberViewHold
         View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
         NumberViewHolder viewHolder = new NumberViewHolder(view);
 
-        JSONObject json = JSONhelper.parseJsonFromArray(mJsonArray, viewHolderCount);
+        JSONObject json = JSONhelper.parseJsonFromArray(_jsonArray, _viewHolderCount);
 
-        String name = (true==mIsVideo)?
-                        "Trailer " + Integer.toString(viewHolderCount+1):
+        String name = (true==_isVideo)?
+                        "Trailer " + Integer.toString(_viewHolderCount+1):
                         JSONhelper.parseValueByKey(json, MovieHelper.KEY_AUTHOR);
 
 
-        Log.d(TAG, "onCreateViewHolder: number of ViewHolders created: " + viewHolderCount);
+        Log.d(TAG, "onCreateViewHolder: number of ViewHolders created: " + _viewHolderCount);
 
         //String url = (true==mIsReview)?
         //                MovieHelper.BASE_YOUTUBE_URL + JSONhelper.parseValueByKey(json, MovieHelper.KEY_TRAILER):
@@ -86,7 +86,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.NumberViewHold
 
         viewHolder.viewHolderText.setText(name);
 
-        viewHolderCount++;
+        _viewHolderCount++;
         return viewHolder;
     }
 
@@ -109,7 +109,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.NumberViewHold
 
     @Override
     public int getItemCount() {
-        return mNumberItems;
+        return _numberItems;
     }
 
     /**
@@ -142,7 +142,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.NumberViewHold
         public void onClick(View view)
         {
             int clickPosition = getAdapterPosition();
-            mOnClickListener.onListItemClick(clickPosition, mIsVideo);
+            _clickListener.onListItemClick(clickPosition, _isVideo);
         }
 
     }
