@@ -53,7 +53,7 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
     protected String _id;
     private JSONObject _json;
     private String _title;
-    private boolean _isFavorite;
+    private boolean _isFavorite = false;
 
 
     @Override
@@ -101,11 +101,13 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
         // query db -- isFavorite if exists
         String[] columns = {"title"};
         String[] args = {this._title};
-        Cursor c = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+        Cursor cursor = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
                                         columns,
                                         "title=?",
                                         args,
                                         "title DESC");
+
+        this._isFavorite = (0==cursor.getCount())? false : true;
 
         // label button pending on query result
         final Button button = (Button) findViewById(R.id.btnFavorite);
@@ -142,14 +144,11 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
     private void setBtnFavoriteText()
     {
         final Button button = (Button) findViewById(R.id.btnFavorite);
-        if(_isFavorite)
-        {
+        int stringIndex = (_isFavorite)?
+                R.string.remove_favorite:
+                R.string.mark_as_favorite;
 
-        }
-        else
-        {
-
-        }
+        button.setText(getString(stringIndex));
     }
 
     private View.OnClickListener buttonListener = new View.OnClickListener()
