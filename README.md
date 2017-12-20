@@ -65,6 +65,15 @@ db.execSQL("DELETE FROM " + TABLE_NAME+ " WHERE "+COLUMN_TITLE+"='"+selection+"'
 ### display favorite sorted (DESC)
 ![screen shot 2017-12-19 at 8 03 38 pm](https://user-images.githubusercontent.com/1282659/34187621-fa4d4a70-e4f7-11e7-8f00-2bf928dac3df.png)
 
+### Refinements for a professional looking product.
+- tests and error handling.
+- more layouts for different format + sizes.
+- more graphics for trailer + reviews.
+- more verbose; example: no trailer, no review, toasts
+- more comments in code
+- more modularized code; decouple; refactor and use appropriate design patterns for more general usage.
+- use SharedPreference for application state so we can resume after rotation, etc.
+
 ### Common Project Requirements
 
 ### MEETS SPECIFICATIONS
