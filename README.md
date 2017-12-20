@@ -17,6 +17,8 @@ You’ll add more information to your movie details view:
 - To fetch reviews you will want to make a request to the /movie/{id}/reviews endpoint
 - You should use an Intent to open a youtube link in either the native app or a web browser of choice.
 
+### Implementation demo
+
 Below screenshots demonstrate pages: main -> detail -> trailer or review.
 
 ### 1080 x 1920 - 1 size only
