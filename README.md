@@ -65,7 +65,7 @@ db.execSQL("DELETE FROM " + TABLE_NAME+ " WHERE "+COLUMN_TITLE+"='"+selection+"'
 ### display favorite sorted (DESC)
 ![screen shot 2017-12-19 at 8 03 38 pm](https://user-images.githubusercontent.com/1282659/34187621-fa4d4a70-e4f7-11e7-8f00-2bf928dac3df.png)
 
-### Refinements for a professional looking product.
+### Refinements in the future (for product grade)
 - tests and error handling.
 - more layouts for different format + sizes.
 - more graphics for trailer + reviews.
