@@ -1,6 +1,7 @@
 package com.ctyeung.popularmoviestage2;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.ctyeung.popularmoviestage2.data.MovieContract;
 import com.ctyeung.popularmoviestage2.utilities.JSONhelper;
 import java.io.IOException;
 import java.net.URL;
@@ -100,6 +103,27 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
 
     protected void loadMovieFavorites()
     {
+        Cursor cursor = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                "title DESC");
+
+        if(cursor.getCount() > 0)
+        {
+            _jsonArray = new JSONArray();
+            cursor.moveToFirst();
+            while (cursor.isAfterLast() == false)
+            {
+                String value = cursor.getString(2);
+                JSONObject json = JSONhelper.parseJson(value);
+                _jsonArray.put(json);
+                cursor.moveToNext();
+            }
+            populateMovieGrid();
+        }
+        else
+            Toast.makeText(getBaseContext(), "no favorites", Toast.LENGTH_LONG).show();
 
     }
 
