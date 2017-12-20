@@ -172,6 +172,8 @@ public class DetailActivity extends AppCompatActivity implements com.ctyeung.pop
                 // Insert the content values via a ContentResolver
                 uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
             }
+
+            _isFavorite = !_isFavorite;
             setBtnFavoriteText();
 
             if(uri != null)

@@ -160,28 +160,23 @@ public class MovieContentProvider extends ContentProvider {
 
         // Get access to the database and write URI matching code to recognize a single item
         final SQLiteDatabase db = mMovieDbHelper.getWritableDatabase();
+        int taskDeleted = 0; // starts as 0
 
-        int match = sUriMatcher.match(uri);
-        int tasksDeleted; // starts as 0
-
-        switch (match) {
-            case MOVIE_WITH_TITLE:
-                String title = uri.getPathSegments().get(1);
-                //db.execSQL("DELETE FROM " + TABLE_NAME+ " WHERE "+COLUMN_TITLE+"='"+title+"'");
-                tasksDeleted = db.delete(TABLE_NAME, COLUMN_TITLE + "=" + title, null);
-                break;
-            default:
-                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        if (null != selection &&
+                !selection.isEmpty() )
+        {
+            db.execSQL("DELETE FROM " + TABLE_NAME+ " WHERE "+COLUMN_TITLE+"='"+selection+"'");
+            db.close();
         }
 
         // Notify the resolver of a change and return the number of items deleted
-        if (tasksDeleted != 0) {
+        if (taskDeleted != 0) {
             // A task was deleted, set notification
             getContext().getContentResolver().notifyChange(uri, null);
         }
 
         // Return the number of tasks deleted
-        return tasksDeleted;
+        return taskDeleted;
     }
 
 
