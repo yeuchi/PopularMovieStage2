@@ -34,8 +34,14 @@ Below screenshots demonstrate pages: main -> detail -> trailer or review.
 ![detail](https://user-images.githubusercontent.com/1282659/34073578-ec7a7f46-e261-11e7-81ab-acb66608f5b9.png)
 ![fork](https://user-images.githubusercontent.com/1282659/34073579-eedd7a90-e261-11e7-8a1d-2e0386371248.png)
 
-Below screenshots demonstrate content provider with SQLiteDatabase operators: 
+Below screenshots demonstrate content provider with SQLiteDatabase CRUD operators: 
 
+### create
+final String CREATE_TABLE = "CREATE TABLE "  + MovieContract.MovieEntry.TABLE_NAME + " (" +
+                MovieContract.MovieEntry._ID                 + " INTEGER PRIMARY KEY, " +
+                MovieContract.MovieEntry.COLUMN_TITLE        + " TEXT NOT NULL, " +
+                MovieContract.MovieEntry.COLUMN_JSON_DETAIL  + " TEXT NOT NULL);";
+                
 ### query
 cursor = db.query(MovieContract.MovieEntry.TABLE_NAME,
                         columns,
@@ -44,6 +50,8 @@ cursor = db.query(MovieContract.MovieEntry.TABLE_NAME,
                         null,
                         null,
                         sortOrder);
+
+### update - not used
 
 ### insert
 db.insert(TABLE_NAME, null, values);
