@@ -62,6 +62,9 @@ db.execSQL("DELETE FROM " + TABLE_NAME+ " WHERE "+COLUMN_TITLE+"='"+selection+"'
 ![screen shot 2017-12-19 at 6 37 02 pm](https://user-images.githubusercontent.com/1282659/34185963-3c3d2f9a-e4ee-11e7-94f0-185cf6f608b1.png)
 ![screen shot 2017-12-19 at 6 37 27 pm](https://user-images.githubusercontent.com/1282659/34185964-3c509076-e4ee-11e7-96c1-44732bf56dea.png)
 
+### display favorite sorted (DESC)
+![screen shot 2017-12-19 at 8 03 38 pm](https://user-images.githubusercontent.com/1282659/34187621-fa4d4a70-e4f7-11e7-8f00-2bf928dac3df.png)
+
 ### Common Project Requirements
 
 ### MEETS SPECIFICATIONS
