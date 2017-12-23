@@ -6,7 +6,7 @@
     <string name="network_error">Please check network..</string>
     <string name="mark_as_favorite">Mark as Favorite</string>
     <string name="remove_favorite">Remove Favorite</string>
-    <string name="trailer_header">Trailers:</string>
+    <string name="trailer_header">Trailers</string>
     <string name="plot_header">Plot:</string>
-    <string name="review_header">Reviews:</string>
+    <string name="review_header">Reviews</string>
 </resources>

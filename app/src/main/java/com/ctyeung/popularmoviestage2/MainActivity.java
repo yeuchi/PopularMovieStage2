@@ -30,10 +30,12 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity implements MovieGridAdapter.ListItemClickListener
 {
     private MovieGridAdapter mAdapter;
-    private RecyclerView mNumbersList;
+
     private Toast mToast;
-    private MovieGridAdapter.ListItemClickListener mListener;
+        private MovieGridAdapter.ListItemClickListener mListener;
     private JSONArray mJsonArray;
+
+    private RecyclerView mNumbersList;
     private ProgressBar mLoadingIndicator;
     private TextView tvNetworkErrorDisplay;
 
