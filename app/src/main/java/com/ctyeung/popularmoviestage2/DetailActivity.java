@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 import android.net.Uri;
 import android.database.Cursor;
@@ -56,7 +57,6 @@ public class DetailActivity extends AppCompatActivity
     private String title;
     private boolean isFavorite = false;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +80,22 @@ public class DetailActivity extends AppCompatActivity
         parseJSONContent();
         initializeElements();
         initializeAdvocateList();
+        setScrollPosition();
+    }
+
+    private void setScrollPosition()
+    {
+        /*
+         * default at top ... unless we have a previous position
+         */
+        final ScrollView scrollView = (ScrollView) findViewById(R.id.sv_scroller);
+        scrollView.post(new Runnable()
+        {
+            public void run()
+            {
+                scrollView.fullScroll(View.FOCUS_UP);
+            }
+        });
     }
 
     private void parseJSONContent()

@@ -4,9 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="start"
     tools:context="com.ctyeung.popularmoviestage2.DetailActivity">
 
     <ScrollView
+        android:id="@+id/sv_scroller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
