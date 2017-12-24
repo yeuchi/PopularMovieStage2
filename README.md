@@ -27,7 +27,6 @@ Below screenshots demonstrate pages: main -> detail -> trailer or review.
 ![screen shot 2017-12-14 at 6 40 21 pm](https://user-images.githubusercontent.com/1282659/34021237-46d6f678-e0fe-11e7-9793-7cc41c5cb069.png)
 ![screen shot 2017-12-14 at 6 37 14 pm](https://user-images.githubusercontent.com/1282659/34021156-e60eec88-e0fd-11e7-8a34-8e6642d5d0c6.png)
 ![portrait](https://user-images.githubusercontent.com/1282659/34323796-66fe1626-e81e-11e7-84c9-0ddf7d4d53df.png)
-
 ![screen shot 2017-12-15 at 5 03 35 pm](https://user-images.githubusercontent.com/1282659/34063806-2cf4f874-e1ba-11e7-84a0-f73e299ce8bb.png)
 ![screen shot 2017-12-15 at 5 02 38 pm](https://user-images.githubusercontent.com/1282659/34063809-327879c4-e1ba-11e7-88f4-d3486a27b5a9.png)
 
@@ -35,6 +34,7 @@ Below screenshots demonstrate pages: main -> detail -> trailer or review.
 ![main](https://user-images.githubusercontent.com/1282659/34073577-eac8d346-e261-11e7-81c1-c3ea69da0d6e.png)
 ![detail](https://user-images.githubusercontent.com/1282659/34073578-ec7a7f46-e261-11e7-81ab-acb66608f5b9.png)
 ![fork](https://user-images.githubusercontent.com/1282659/34073579-eedd7a90-e261-11e7-8a1d-2e0386371248.png)
+![landscape](https://user-images.githubusercontent.com/1282659/34323817-8bf51524-e81e-11e7-9518-06dde6f523f0.png)
 
 Below screenshots demonstrate content provider with SQLiteDatabase CRUD operators: 
 
