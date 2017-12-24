@@ -40,4 +40,9 @@ public class Movie {
                 JSONhelper.parseValueByKey(json, MovieHelper.KEY_POSTER_PATH);
     }
 
+    public String getJSONString()
+    {
+        return json.toString();
+    }
+
 }

@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
     private List<Movie> movies;
     private ProgressBar mLoadingIndicator;
     private TextView tvNetworkErrorDisplay;
-    private String id;
     private JSONObject json;
     private String trailerString = null;
     private String reviewString = null;
@@ -185,10 +184,19 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
         public static final String METHOD_TRAILERS = "TRAILERS";
         public static final String METHOD_REVIEWS = "REVIEWS";
         private String mMethod;
+        private Movie mSelectedMovie;
 
         public GithubQueryTask(String method)
         {
             this.mMethod = method;
+            this.mSelectedMovie = null;
+        }
+
+        public GithubQueryTask(Movie selectedMovie,
+                               String method)
+        {
+            this.mMethod = method;
+            this.mSelectedMovie = selectedMovie;
         }
 
         @Override
@@ -243,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
         {
             boolean typeVideo = MovieHelper.isVideo(str);
 
-            if(null != json)
+            if(null != mSelectedMovie)
             {
                 if(typeVideo)
                 {
@@ -257,11 +265,12 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
                 // launch detail page when we have all content (selection, trailers, reviews json)
                 if(null!=trailerString &&
                         null!=reviewString)
-                    launchDetailActivity();
+                    launchDetailActivity(mSelectedMovie);
             }
             else
             {
-                // display info explaining 'no trailer or review' available
+                // display info explaining 'no selection, trailer or review' available
+                tvNetworkErrorDisplay.setVisibility(View.VISIBLE);
             }
         }
 
@@ -279,10 +288,12 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
                         movies.size()>0)
                 {
                     populateMovieGrid();
+                    return;
                 }
             }
-            else
-                tvNetworkErrorDisplay.setVisibility(View.VISIBLE);
+
+            // display error if no data is available
+            tvNetworkErrorDisplay.setVisibility(View.VISIBLE);
         }
     }
 
@@ -300,33 +311,35 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
             mToast.cancel();
 
         // launch detail activity
-        Movie movie = movies.get(clickItemIndex);
-        this.id = movie.getId();
+        Movie selectedMovie = movies.get(clickItemIndex);
+        String id = selectedMovie.getId();
 
-        requestTrailers();
-        requestReviews();
+        requestTrailers(selectedMovie, id);
+        requestReviews(selectedMovie, id);
     }
 
-    private void requestTrailers()
+    private void requestTrailers(Movie selectedMovie,
+                                 String id)
     {
-        URL url = NetworkUtils.buildVideoUrl(this.id);
-        GithubQueryTask task = new GithubQueryTask(GithubQueryTask.METHOD_TRAILERS);
+        URL url = NetworkUtils.buildVideoUrl(id);
+        GithubQueryTask task = new GithubQueryTask(selectedMovie, GithubQueryTask.METHOD_TRAILERS);
         task.execute(url);
     }
 
-    private void requestReviews()
+    private void requestReviews(Movie selectedMovie,
+                                String id)
     {
-        URL url = NetworkUtils.buildReviewUrl(this.id);
-        GithubQueryTask task = new GithubQueryTask(GithubQueryTask.METHOD_REVIEWS);
+        URL url = NetworkUtils.buildReviewUrl(id);
+        GithubQueryTask task = new GithubQueryTask(selectedMovie, GithubQueryTask.METHOD_REVIEWS);
         task.execute(url);
     }
 
-    private void launchDetailActivity()
+    private void launchDetailActivity(Movie selectedMovie)
     {
         Intent intent = new Intent(this, DetailActivity.class);
-        String mergeString = json.toString() + "_sep_" +
-                trailerString + "_sep_" +
-                reviewString;
+        String mergeString = selectedMovie.getJSONString() + "_sep_" +
+                            trailerString + "_sep_" +
+                            reviewString;
         intent.putExtra(Intent.EXTRA_TEXT, mergeString);
         startActivity(intent);
 /*
