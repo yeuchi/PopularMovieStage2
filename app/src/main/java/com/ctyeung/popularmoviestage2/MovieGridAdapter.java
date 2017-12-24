@@ -30,6 +30,8 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Callback;
 import com.ctyeung.popularmoviestage2.utilities.JSONhelper;
 import com.ctyeung.popularmoviestage2.utilities.MovieHelper;
+import com.ctyeung.popularmoviestage2.data.Movie;
+import java.util.List;
 
 public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.NumberViewHolder> {
 
@@ -37,18 +39,18 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.Numb
     final private ListItemClickListener mOnClickListener;
 
 
-    private static int viewHolderCount;
+    private int viewHolderCount;
     private int mNumberItems;
-    private JSONArray mJsonArray;
+    private List<Movie> movies;
 
     public interface ListItemClickListener
     {
         void onListItemClick(int clickItemIndex);
     }
 
-    public MovieGridAdapter(int numberOfItems, ListItemClickListener listener, JSONArray jsonArray) {
-        mJsonArray = jsonArray;
-        mNumberItems = numberOfItems;
+    public MovieGridAdapter(List<Movie> movies,
+                            ListItemClickListener listener) {
+        this.movies = movies;
         mOnClickListener = listener;
         viewHolderCount = 0;
     }
@@ -62,32 +64,6 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.Numb
 
         View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
         NumberViewHolder viewHolder = new NumberViewHolder(view);
-
-        JSONObject json = JSONhelper.parseJsonFromArray(mJsonArray, viewHolderCount);
-        String title = JSONhelper.parseValueByKey(json, MovieHelper.KEY_TITLE);
-
-        viewHolder.viewHolderName.setText(title);
-
-        Log.d(TAG, "onCreateViewHolder: number of ViewHolders created: " + viewHolderCount);
-
-        String url = MovieHelper.BASE_POSTER_URL +
-                MovieHelper.getSizeByIndex(MovieHelper.INDEX_THUMBNAIL) +
-                JSONhelper.parseValueByKey(json, MovieHelper.KEY_POSTER_PATH);
-        Picasso.with(context)
-                .load(url)
-                .placeholder(R.drawable.placeholder)   // optional
-                .error(R.drawable.placeholder)      // optional
-                .into(viewHolder.viewHolderImage, new Callback() {
-                @Override
-                public void onSuccess() {
-                    //Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onError() {
-                    //Toast.makeText(context, "failed", Toast.LENGTH_SHORT).show();
-                }
-        });
 
         viewHolderCount++;
 
@@ -113,14 +89,13 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.Numb
 
     @Override
     public int getItemCount() {
-        return mNumberItems;
+        return this.movies.size();
     }
 
     /**
      * Cache of the children views for a list item.
      */
     class NumberViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
 
         TextView viewHolderName;
         ImageView viewHolderImage;
@@ -136,12 +111,31 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.Numb
         /**
          * A method we wrote for convenience. This method will take an integer as input and
          * use that integer to display the appropriate text within a list item.
-         * @param listIndex Position of the item in the list
+         * @param position Position of the item in the list
          */
-        void bind(int listIndex)
+        void bind(int position)
         {
+            Movie movie = movies.get(position);
+            viewHolderName.setText(movie.getTitle());
 
-            //viewHolderName.setText(String.valueOf(listIndex));
+            Log.d(TAG, "onCreateViewHolder: number of ViewHolders created: " + viewHolderCount);
+
+            Picasso.with(viewHolderImage.getContext())
+                    .load(movie.getPosterUrl())
+                    .placeholder(R.drawable.placeholder)   // optional
+                    .error(R.drawable.placeholder)      // optional
+                    .into(viewHolderImage, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            //Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onError() {
+                            //Toast.makeText(context, "failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
         }
 
         @Override

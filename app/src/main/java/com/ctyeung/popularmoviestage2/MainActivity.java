@@ -16,9 +16,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Context;
+import java.util.List;
 
 import com.ctyeung.popularmoviestage2.data.MovieContract;
+import com.ctyeung.popularmoviestage2.data.MovieFactory;
 import com.ctyeung.popularmoviestage2.utilities.JSONhelper;
+import com.ctyeung.popularmoviestage2.data.Movie;
 import java.io.IOException;
 import java.net.URL;
 import android.content.res.Configuration;
@@ -35,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
     private RecyclerView mNumbersList;
     private Toast mToast;
     private MovieGridAdapter.ListItemClickListener mListener;
-    private JSONArray mJsonArray;
+    private List<Movie> movies;
     private ProgressBar mLoadingIndicator;
     private TextView tvNetworkErrorDisplay;
     private String id;
@@ -135,13 +138,15 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
 
         if(cursor.getCount() > 0)
         {
-            mJsonArray = new JSONArray();
+            movies.clear();
             cursor.moveToFirst();
+            int i=0;
             while (cursor.isAfterLast() == false)
             {
                 String value = cursor.getString(2);
                 JSONObject json = JSONhelper.parseJson(value);
-                mJsonArray.put(json);
+                Movie movie = new Movie((json));
+                movies.add(i++, movie);
                 cursor.moveToNext();
             }
             populateMovieGrid();
@@ -223,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
         {
             switch (mMethod) {
                 case METHOD_THUMBS:
-                    handleMoveData(str);
+                    handleMovieData(str);
                     break;
 
                 case METHOD_TRAILERS:
@@ -260,17 +265,18 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
             }
         }
 
-        private void handleMoveData(String str)
+        private void handleMovieData(String str)
         {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             JSONObject json = JSONhelper.parseJson(str);
 
             if(null != json)
             {
-                mJsonArray = JSONhelper.getJsonArray(json, "results");
+                JSONArray jsonArray = JSONhelper.getJsonArray(json, "results");
+                movies = MovieFactory.CreateMovies(jsonArray);
 
-                if(null!=mJsonArray &&
-                        mJsonArray.length()>0)
+                if(null!=movies &&
+                        movies.size()>0)
                 {
                     populateMovieGrid();
                 }
@@ -282,8 +288,7 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
 
     private void populateMovieGrid()
     {
-        int size = mJsonArray.length();
-        mAdapter = new MovieGridAdapter(size, mListener, mJsonArray);
+        mAdapter = new MovieGridAdapter(movies, mListener);
         mNumbersList.setAdapter(mAdapter);
         mNumbersList.setHasFixedSize(true);
     }
@@ -295,8 +300,8 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
             mToast.cancel();
 
         // launch detail activity
-        json = JSONhelper.parseJsonFromArray(mJsonArray, clickItemIndex);
-        this.id = JSONhelper.parseValueByKey(json, MovieHelper.KEY_ID);
+        Movie movie = movies.get(clickItemIndex);
+        this.id = movie.getId();
 
         requestTrailers();
         requestReviews();
