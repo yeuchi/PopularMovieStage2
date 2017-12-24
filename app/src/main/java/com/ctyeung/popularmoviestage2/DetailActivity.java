@@ -36,6 +36,7 @@ import com.ctyeung.popularmoviestage2.data.MovieDbHelper;
 public class DetailActivity extends AppCompatActivity
         implements com.ctyeung.popularmoviestage2.ListAdapter.ListItemClickListener {
 
+    private ScrollView scrollView;
     private ListAdapter mTrailerAdapter;
     private ListAdapter mReviewAdapter;
     private RecyclerView mTrailerList;
@@ -62,6 +63,7 @@ public class DetailActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        scrollView = (ScrollView) findViewById(R.id.sv_scroller);
         tvTitle = (TextView)findViewById(R.id.tv_original_title);
         ivPoster = (ImageView)findViewById(R.id.iv_poster_image);
         tvPlot = (TextView)findViewById(R.id.tv_plot);
@@ -88,7 +90,6 @@ public class DetailActivity extends AppCompatActivity
         /*
          * default at top ... unless we have a previous position
          */
-        final ScrollView scrollView = (ScrollView) findViewById(R.id.sv_scroller);
         scrollView.post(new Runnable()
         {
             public void run()
@@ -256,5 +257,12 @@ public class DetailActivity extends AppCompatActivity
         String toastmessage = getString(R.string.item_no)+" " + clickItemIndex + " "+ getString(R.string.clicked);
         _toast = Toast.makeText(this, toastmessage, Toast.LENGTH_LONG);
         _toast.show();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        // get the Scrollview position
+        super.onDestroy();
     }
 }

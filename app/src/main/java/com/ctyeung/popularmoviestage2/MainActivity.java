@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.ctyeung.popularmoviestage2.data.MovieContract;
 import com.ctyeung.popularmoviestage2.data.MovieFactory;
+import com.ctyeung.popularmoviestage2.data.SharedPrefUtility;
 import com.ctyeung.popularmoviestage2.utilities.JSONhelper;
 import com.ctyeung.popularmoviestage2.data.Movie;
 import java.io.IOException;
@@ -46,9 +47,7 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
     private String reviewString = null;
     private String mSortMethod = MovieHelper.SORT_POPULAR;
 
-    SharedPreferences sharedPreferences;
-    public static final String mypreference = "mypref";
-    public static final String SORT_METHOD = "sort";
+    SharedPrefUtility sharedPrefUtility;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -66,13 +65,8 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
         mListener = this;
 
 
-        sharedPreferences = getSharedPreferences(mypreference, Context.MODE_PRIVATE);
-
-        if (sharedPreferences.contains(SORT_METHOD))
-        {
-            mSortMethod = sharedPreferences.getString(SORT_METHOD, MovieHelper.SORT_POPULAR);
-        }
-        requestMovies(mSortMethod);
+        sharedPrefUtility = new SharedPrefUtility(getApplicationContext());
+        requestMovies(sharedPrefUtility.getSortMethod());
     }
 
     private int NumberColumns()
@@ -102,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int itemId = item.getItemId();
-        SharedPreferences.Editor editor = sharedPreferences.edit();
 
         switch (itemId) {
 
@@ -121,8 +114,7 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
             default:
                 return super.onOptionsItemSelected(item);
         }
-        editor.putString(SORT_METHOD, mSortMethod);
-        editor.commit();
+        sharedPrefUtility.setSortMethod(mSortMethod);
         requestMovies(mSortMethod);
         return true;
     }
@@ -348,5 +340,12 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
         mToast = Toast.makeText(this, toastmessage, Toast.LENGTH_LONG);
         mToast.show();
         */
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        // get the Gridview scroll position
+        super.onDestroy();
     }
 }
