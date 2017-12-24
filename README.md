@@ -26,7 +26,8 @@ Below screenshots demonstrate pages: main -> detail -> trailer or review.
 ### Portrait layout
 ![screen shot 2017-12-14 at 6 40 21 pm](https://user-images.githubusercontent.com/1282659/34021237-46d6f678-e0fe-11e7-9793-7cc41c5cb069.png)
 ![screen shot 2017-12-14 at 6 37 14 pm](https://user-images.githubusercontent.com/1282659/34021156-e60eec88-e0fd-11e7-8a34-8e6642d5d0c6.png)
-![screen shot 2017-12-19 at 8 50 19 pm](https://user-images.githubusercontent.com/1282659/34188893-5dfac5b0-e4fe-11e7-8d53-3daa54f3f4ff.png)
+![portrait](https://user-images.githubusercontent.com/1282659/34323796-66fe1626-e81e-11e7-84c9-0ddf7d4d53df.png)
+
 ![screen shot 2017-12-15 at 5 03 35 pm](https://user-images.githubusercontent.com/1282659/34063806-2cf4f874-e1ba-11e7-84a0-f73e299ce8bb.png)
 ![screen shot 2017-12-15 at 5 02 38 pm](https://user-images.githubusercontent.com/1282659/34063809-327879c4-e1ba-11e7-88f4-d3486a27b5a9.png)
 
