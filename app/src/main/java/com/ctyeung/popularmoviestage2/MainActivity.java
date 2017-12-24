@@ -1,6 +1,7 @@
 package com.ctyeung.popularmoviestage2;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Context;
 
 import com.ctyeung.popularmoviestage2.data.MovieContract;
 import com.ctyeung.popularmoviestage2.utilities.JSONhelper;
@@ -40,6 +42,12 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
     private JSONObject json;
     private String trailerString = null;
     private String reviewString = null;
+    private String mSortMethod = MovieHelper.SORT_POPULAR;
+
+    SharedPreferences sharedPreferences;
+    public static final String mypreference = "mypref";
+    public static final String SORT_METHOD = "sort";
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -55,7 +63,14 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
         mNumbersList.setLayoutManager(layoutManager);
         mListener = this;
 
-        requestMovies(MovieHelper.SORT_POPULAR);
+
+        sharedPreferences = getSharedPreferences(mypreference, Context.MODE_PRIVATE);
+
+        if (sharedPreferences.contains(SORT_METHOD))
+        {
+            mSortMethod = sharedPreferences.getString(SORT_METHOD, MovieHelper.SORT_POPULAR);
+        }
+        requestMovies(mSortMethod);
     }
 
     private int NumberColumns()
@@ -85,23 +100,29 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int itemId = item.getItemId();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
 
         switch (itemId) {
 
             case R.id.sort_popular:
-                requestMovies(MovieHelper.SORT_POPULAR);
-                return true;
+                mSortMethod = MovieHelper.SORT_POPULAR;
+                break;
 
             case R.id.sort_top_rated:
-                requestMovies(MovieHelper.SORT_TOP_RATED);
-                return true;
+                mSortMethod = MovieHelper.SORT_TOP_RATED;
+                break;
 
             case R.id.sort_favorite:
-                loadMovieFavorites();
-                return true;
-        }
+                mSortMethod = MovieHelper.SORT_FAVORITE;
+                break;
 
-        return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        editor.putString(SORT_METHOD, mSortMethod);
+        editor.commit();
+        requestMovies(mSortMethod);
+        return true;
     }
 
     protected void loadMovieFavorites()
@@ -136,9 +157,18 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
      */
     protected void requestMovies(String sortMethod)
     {
-        URL url = NetworkUtils.buildMainPageUrl(sortMethod);
-        GithubQueryTask task = new GithubQueryTask(GithubQueryTask.METHOD_THUMBS);
-        task.execute(url);
+        switch(sortMethod)
+        {
+            case MovieHelper.SORT_FAVORITE:
+                loadMovieFavorites();
+                break;
+
+            default:
+                URL url = NetworkUtils.buildMainPageUrl(sortMethod);
+                GithubQueryTask task = new GithubQueryTask(GithubQueryTask.METHOD_THUMBS);
+                task.execute(url);
+                break;
+        }
     }
 
     /*

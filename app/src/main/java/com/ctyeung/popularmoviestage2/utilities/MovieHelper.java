@@ -11,6 +11,7 @@ public class MovieHelper {
 
     public static final String SORT_POPULAR = "popular";
     public static final String SORT_TOP_RATED = "top_rated";
+    public static final String SORT_FAVORITE = "favorite";
     public static final String KEY_POSTER_PATH = "poster_path";
     public static final String KEY_TITLE = "title";
     public static final String KEY_ORIGINAL_TITLE = "original_title";
