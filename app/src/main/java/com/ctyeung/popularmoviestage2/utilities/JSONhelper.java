@@ -29,12 +29,26 @@ public class JSONhelper
         JSONArray jsonArray = null;
         try
         {
-            jsonArray = json.getJSONArray("results");
+            jsonArray = json.getJSONArray(key);
         }
         catch (Exception ex)
         {
             ex.printStackTrace();
         }
+        return jsonArray;
+    }
+
+    public static JSONArray getJsonArray(String jsonString, String key)
+    {
+        if(null==jsonString)
+            return null;
+
+        JSONObject json = JSONhelper.parseJson(jsonString);
+
+        if (null == json)
+            return null;
+
+        JSONArray jsonArray = JSONhelper.getJsonArray(json, key);
         return jsonArray;
     }
 

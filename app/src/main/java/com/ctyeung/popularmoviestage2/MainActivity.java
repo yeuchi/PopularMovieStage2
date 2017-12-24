@@ -30,15 +30,16 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity implements MovieGridAdapter.ListItemClickListener
 {
     private MovieGridAdapter mAdapter;
-
-    private Toast mToast;
-        private MovieGridAdapter.ListItemClickListener mListener;
-    private JSONArray mJsonArray;
-
     private RecyclerView mNumbersList;
+    private Toast mToast;
+    private MovieGridAdapter.ListItemClickListener mListener;
+    private JSONArray mJsonArray;
     private ProgressBar mLoadingIndicator;
     private TextView tvNetworkErrorDisplay;
-
+    private String id;
+    private JSONObject json;
+    private String trailerString = null;
+    private String reviewString = null;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
         switch (orientation)
         {
             case Configuration.ORIENTATION_LANDSCAPE:
-               return 3;
+                return 3;
 
             default:
             case Configuration.ORIENTATION_PORTRAIT:
@@ -129,14 +130,31 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
 
     }
 
+    /*
+     * load movie thumbs for main page
+     */
     protected void requestMovies(String sortMethod)
     {
         URL url = NetworkUtils.buildMainPageUrl(sortMethod);
-        new GithubQueryTask().execute(url);
+        GithubQueryTask task = new GithubQueryTask(GithubQueryTask.METHOD_THUMBS);
+        task.execute(url);
     }
 
+    /*
+     * Refactor this class with VideoQueryTask later !!!!!
+     */
     public class GithubQueryTask extends AsyncTask<URL, Void, String>
     {
+        public static final String METHOD_THUMBS = "THUMBS";
+        public static final String METHOD_TRAILERS = "TRAILERS";
+        public static final String METHOD_REVIEWS = "REVIEWS";
+        private String mMethod;
+
+        public GithubQueryTask(String method)
+        {
+            this.mMethod = method;
+        }
+
         @Override
         protected String doInBackground(URL... urls) {
             URL searchUrl = urls[0];
@@ -155,11 +173,63 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
         protected void onPreExecute()
         {
             super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-            tvNetworkErrorDisplay.setVisibility(View.INVISIBLE);
+
+            switch(mMethod)
+            {
+                case METHOD_THUMBS:
+                    mLoadingIndicator.setVisibility(View.VISIBLE);
+                    tvNetworkErrorDisplay.setVisibility(View.INVISIBLE);
+                    break;
+
+                case METHOD_TRAILERS:
+                case METHOD_REVIEWS:
+                    break;
+
+            }
         }
 
         protected void onPostExecute(String str)
+        {
+            switch (mMethod) {
+                case METHOD_THUMBS:
+                    handleMoveData(str);
+                    break;
+
+                case METHOD_TRAILERS:
+                case METHOD_REVIEWS:
+                    handleAdvocateData(str);
+                    break;
+            }
+
+        }
+
+        private void handleAdvocateData(String str)
+        {
+            boolean typeVideo = MovieHelper.isVideo(str);
+
+            if(null != json)
+            {
+                if(typeVideo)
+                {
+                    trailerString = str;
+                }
+                else
+                {
+                    reviewString = str;
+                }
+
+                // launch detail page when we have all content (selection, trailers, reviews json)
+                if(null!=trailerString &&
+                        null!=reviewString)
+                    launchDetailActivity();
+            }
+            else
+            {
+                // display info explaining 'no trailer or review' available
+            }
+        }
+
+        private void handleMoveData(String str)
         {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             JSONObject json = JSONhelper.parseJson(str);
@@ -194,14 +264,40 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
             mToast.cancel();
 
         // launch detail activity
-        JSONObject json = JSONhelper.parseJsonFromArray(mJsonArray, clickItemIndex);
-        Intent intent = new Intent(this, DetailActivity.class);
-        intent.putExtra(Intent.EXTRA_TEXT, json.toString());
-        startActivity(intent);
+        json = JSONhelper.parseJsonFromArray(mJsonArray, clickItemIndex);
+        this.id = JSONhelper.parseValueByKey(json, MovieHelper.KEY_ID);
 
+        requestTrailers();
+        requestReviews();
+    }
+
+    private void requestTrailers()
+    {
+        URL url = NetworkUtils.buildVideoUrl(this.id);
+        GithubQueryTask task = new GithubQueryTask(GithubQueryTask.METHOD_TRAILERS);
+        task.execute(url);
+    }
+
+    private void requestReviews()
+    {
+        URL url = NetworkUtils.buildReviewUrl(this.id);
+        GithubQueryTask task = new GithubQueryTask(GithubQueryTask.METHOD_REVIEWS);
+        task.execute(url);
+    }
+
+    private void launchDetailActivity()
+    {
+        Intent intent = new Intent(this, DetailActivity.class);
+        String mergeString = json.toString() + "_sep_" +
+                trailerString + "_sep_" +
+                reviewString;
+        intent.putExtra(Intent.EXTRA_TEXT, mergeString);
+        startActivity(intent);
+/*
         // toast
         String toastmessage = "Item #" + clickItemIndex + "clicked";
         mToast = Toast.makeText(this, toastmessage, Toast.LENGTH_LONG);
         mToast.show();
+        */
     }
 }

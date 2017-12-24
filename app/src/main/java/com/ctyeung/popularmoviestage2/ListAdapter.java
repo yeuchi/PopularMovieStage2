@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Button;
 import android.text.Html;
 
 import org.json.JSONArray;
@@ -36,7 +37,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.NumberViewHold
     final private ListItemClickListener mClickListener;
 
 
-    private static int mViewHolderCount;
+    private int mViewHolderCount;
     private int mNumberItems;
     private JSONArray mJsonArray;
     private boolean mIsVideo = false;
@@ -72,8 +73,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.NumberViewHold
         JSONObject json = JSONhelper.parseJsonFromArray(mJsonArray, mViewHolderCount);
 
         String name = (true==mIsVideo)?
-                        "Trailer " + Integer.toString(mViewHolderCount+1):
-                        JSONhelper.parseValueByKey(json, MovieHelper.KEY_AUTHOR);
+                JSONhelper.parseValueByKey(json, MovieHelper.KEY_TYPE) + ":" +
+                        JSONhelper.parseValueByKey(json, MovieHelper.KEY_NAME) :
+                "Author: " + JSONhelper.parseValueByKey(json, MovieHelper.KEY_AUTHOR);
 
 
         Log.d(TAG, "onCreateViewHolder: number of ViewHolders created: " + mViewHolderCount);
@@ -84,7 +86,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.NumberViewHold
 
         //String text = "<a href='"+ url +"'> "+name+" </a>";
 
-        viewHolder.viewHolderText.setText(name);
+        viewHolder.button.setText(name);
 
         mViewHolderCount++;
         return viewHolder;
@@ -118,13 +120,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.NumberViewHold
     class NumberViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
 
-        TextView viewHolderText;
+        Button button;
 
         public NumberViewHolder(View itemView) {
             super(itemView);
 
-            viewHolderText = (TextView) itemView.findViewById(R.id.tv_name);
-            itemView.setOnClickListener(this);
+            button = (Button) itemView.findViewById(R.id.btn_advocate);
+            button.setOnClickListener(this);
         }
 
         /**

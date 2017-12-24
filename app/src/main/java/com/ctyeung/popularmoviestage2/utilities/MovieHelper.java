@@ -22,6 +22,8 @@ public class MovieHelper {
     public static final String KEY_AUTHOR = "author";
     public static final String KEY_REVIEW_URL = "url";
     public static final String KEY_ID = "id";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_TYPE = "type";
 
     public final static String BASE_POSTER_URL = "http://image.tmdb.org/t/p/";
     public final static String PARAM_API_VIDEO = "videos";

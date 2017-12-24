@@ -30,7 +30,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.ctyeung.projectpopularmoviesstage1.MainActivity">
+        tools:context="com.ctyeung.popularmoviestage2.MainActivity">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_movie"
