@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
 import android.text.Html;
+import android.content.res.Resources;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -73,9 +74,9 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.NumberViewHold
         JSONObject json = JSONhelper.parseJsonFromArray(mJsonArray, mViewHolderCount);
 
         String name = (true==mIsVideo)?
-                JSONhelper.parseValueByKey(json, MovieHelper.KEY_TYPE) + ":" +
+                        JSONhelper.parseValueByKey(json, MovieHelper.KEY_TYPE) + ":" +
                         JSONhelper.parseValueByKey(json, MovieHelper.KEY_NAME) :
-                "Author: " + JSONhelper.parseValueByKey(json, MovieHelper.KEY_AUTHOR);
+                        "Author: " + JSONhelper.parseValueByKey(json, MovieHelper.KEY_AUTHOR);
 
 
         Log.d(TAG, "onCreateViewHolder: number of ViewHolders created: " + mViewHolderCount);

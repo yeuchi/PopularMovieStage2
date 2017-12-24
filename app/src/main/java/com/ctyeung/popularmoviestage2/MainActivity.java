@@ -126,8 +126,9 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
             populateMovieGrid();
         }
         else
-            Toast.makeText(getBaseContext(), "no favorites", Toast.LENGTH_LONG).show();
-
+        {
+            Toast.makeText(getBaseContext(), getString(R.string.no_favorite), Toast.LENGTH_LONG).show();
+        }
     }
 
     /*

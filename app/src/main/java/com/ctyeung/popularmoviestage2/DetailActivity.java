@@ -125,16 +125,16 @@ public class DetailActivity extends AppCompatActivity
         this.id = JSONhelper.parseValueByKey(this.json, MovieHelper.KEY_ID);
 
         String voteAverage = JSONhelper.parseValueByKey(this.json, MovieHelper.KEY_VOTE_AVERAGE);
-        tvRating.setText("Vote Average: " + voteAverage);
+        tvRating.setText(getString(R.string.vote_average) + voteAverage);
 
         String date = JSONhelper.parseValueByKey(this.json, MovieHelper.KEY_RELEASE_DATE);
-        tvReleaseDate.setText("Date: " + date);
+        tvReleaseDate.setText(getString(R.string.date) + date);
 
         String plot = JSONhelper.parseValueByKey(this.json, MovieHelper.KEY_PLOT);
         tvPlot.setText(plot);
 
         this.title = JSONhelper.parseValueByKey(this.json, MovieHelper.KEY_ORIGINAL_TITLE);
-        tvTitle.setText("Title: " + this.title);
+        tvTitle.setText(getString(R.string.title) + this.title);
 
         // query db -- isFavorite if exists
         String[] columns = {"title"};
@@ -237,7 +237,7 @@ public class DetailActivity extends AppCompatActivity
         startActivity(intent);
 
         // toast
-        String toastmessage = "Item #" + clickItemIndex + "clicked";
+        String toastmessage = getString(R.string.item_no)+" " + clickItemIndex + " "+ getString(R.string.clicked);
         _toast = Toast.makeText(this, toastmessage, Toast.LENGTH_LONG);
         _toast.show();
     }

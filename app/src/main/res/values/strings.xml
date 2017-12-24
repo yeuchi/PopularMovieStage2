@@ -9,4 +9,11 @@
     <string name="trailer_header">Trailers</string>
     <string name="plot_header">Plot:</string>
     <string name="review_header">Reviews</string>
+    <string name="no_favorite">no favorite</string>
+    <string name="author">Author: </string>
+    <string name="vote_average">Vote Average: </string>
+    <string name="date">Date: </string>
+    <string name="title">Title: </string>
+    <string name="item_no">Item: </string>
+    <string name="clicked">clicked </string>
 </resources>
