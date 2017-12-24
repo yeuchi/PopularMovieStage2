@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
     private String reviewString = null;
     private String mSortMethod = MovieHelper.SORT_POPULAR;
 
-    SharedPrefUtility sharedPrefUtility;
+    private SharedPrefUtility sharedPrefUtility;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)

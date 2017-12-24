@@ -16,6 +16,7 @@ import android.widget.Toast;
 import android.net.Uri;
 import android.database.Cursor;
 
+import com.ctyeung.popularmoviestage2.data.SharedPrefUtility;
 import com.ctyeung.popularmoviestage2.utilities.JSONhelper;
 import com.ctyeung.popularmoviestage2.utilities.NetworkUtils;
 import com.squareup.picasso.Callback;
@@ -57,11 +58,14 @@ public class DetailActivity extends AppCompatActivity
     private JSONObject json;
     private String title;
     private boolean isFavorite = false;
+    private SharedPrefUtility sharedPrefUtility;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        sharedPrefUtility = new SharedPrefUtility(getApplicationContext());
 
         scrollView = (ScrollView) findViewById(R.id.sv_scroller);
         tvTitle = (TextView)findViewById(R.id.tv_original_title);
@@ -87,14 +91,20 @@ public class DetailActivity extends AppCompatActivity
 
     private void setScrollPosition()
     {
-        /*
-         * default at top ... unless we have a previous position
-         */
         scrollView.post(new Runnable()
         {
             public void run()
             {
-                scrollView.fullScroll(View.FOCUS_UP);
+                int pos = sharedPrefUtility.getScrollPos(sharedPrefUtility.DETAIL_SCROLL);
+                if(pos > 0)
+                {
+                    scrollView.smoothScrollTo(0,pos);
+                }
+                else
+                {
+                    //default at top ... unless we have a previous position
+                    scrollView.fullScroll(View.FOCUS_UP);
+                }
             }
         });
     }
@@ -262,7 +272,8 @@ public class DetailActivity extends AppCompatActivity
     @Override
     protected void onDestroy()
     {
-        // get the Scrollview position
+        int pos = scrollView.getScrollY();
+        sharedPrefUtility.setScroll(sharedPrefUtility.DETAIL_SCROLL, pos);
         super.onDestroy();
     }
 }
