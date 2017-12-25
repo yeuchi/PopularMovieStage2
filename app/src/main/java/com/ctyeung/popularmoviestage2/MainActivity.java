@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
     private String trailerString = null;
     private String reviewString = null;
     private String mSortMethod = MovieHelper.SORT_POPULAR;
+    private int scrollY=0;
 
     private SharedPrefUtility sharedPrefUtility;
 
@@ -67,6 +68,20 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
 
         sharedPrefUtility = new SharedPrefUtility(getApplicationContext());
         requestMovies(sharedPrefUtility.getSortMethod());
+
+        // scroll to expected position
+        scrollY = sharedPrefUtility.getScrollPos(SharedPrefUtility.MAIN_SCROLL);
+        mNumbersList.smoothScrollToPosition(scrollY);
+
+        // set scroll event listener
+        mNumbersList.setOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                scrollY += dy;
+                sharedPrefUtility.setScroll(SharedPrefUtility.MAIN_SCROLL, scrollY);
+            }
+        });
     }
 
     private int NumberColumns()
@@ -114,6 +129,8 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
             default:
                 return super.onOptionsItemSelected(item);
         }
+        scrollY = 0;
+        sharedPrefUtility.setScroll(SharedPrefUtility.MAIN_SCROLL, scrollY);
         sharedPrefUtility.setSortMethod(mSortMethod);
         requestMovies(mSortMethod);
         return true;
@@ -345,10 +362,4 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
         */
     }
 
-    @Override
-    protected void onDestroy()
-    {
-        // get the Gridview scroll position
-        super.onDestroy();
-    }
 }
