@@ -328,6 +328,9 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
 
     private void launchDetailActivity(Movie selectedMovie)
     {
+        // start page at top
+        sharedPrefUtility.setScroll(SharedPrefUtility.DETAIL_SCROLL, 0);
+
         Intent intent = new Intent(this, DetailActivity.class);
         String mergeString = selectedMovie.getJSONString() + "_sep_" +
                             trailerString + "_sep_" +
