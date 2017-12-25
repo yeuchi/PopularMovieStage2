@@ -61,7 +61,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.NumberViewHold
     }
 
     @Override
-    public NumberViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public NumberViewHolder onCreateViewHolder(ViewGroup viewGroup,
+                                               int viewType) {
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.recycler_list_item;
 
