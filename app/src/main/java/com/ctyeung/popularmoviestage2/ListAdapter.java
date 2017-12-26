@@ -122,12 +122,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.NumberViewHold
     class NumberViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
 
-        Button button;
+        TextView button;
 
         public NumberViewHolder(View itemView) {
             super(itemView);
 
-            button = (Button) itemView.findViewById(R.id.btn_advocate);
+            button = (TextView) itemView.findViewById(R.id.btn_advocate);
             button.setOnClickListener(this);
         }
 

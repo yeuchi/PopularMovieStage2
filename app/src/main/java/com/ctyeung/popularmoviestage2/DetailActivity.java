@@ -175,7 +175,7 @@ public class DetailActivity extends AppCompatActivity
         this.isFavorite = (0==cursor.getCount())? false : true;
 
         // label button pending on query result
-        final Button button = (Button) findViewById(R.id.btnFavorite);
+        final TextView button = (TextView) findViewById(R.id.btnFavorite);
         button.setOnClickListener(buttonListener);
         setBtnFavoriteText();
 

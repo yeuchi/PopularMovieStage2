@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <Button
+    <TextView
         android:id="@+id/btn_advocate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
