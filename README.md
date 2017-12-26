@@ -75,7 +75,6 @@ db.execSQL("DELETE FROM " + TABLE_NAME+ " WHERE "+COLUMN_TITLE+"='"+selection+"'
 - more verbose; example: no trailer, no review, toasts
 - more comments in code
 - more modularized code; decouple; refactor and use appropriate design patterns for more general usage.
-- use SharedPreference for application state so we can resume after rotation, etc.
 
 ### Common Project Requirements
 
