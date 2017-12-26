@@ -33,7 +33,7 @@ Below screenshots demonstrate pages: main -> detail -> trailer or review.
 ### Landscape layout
 ![main](https://user-images.githubusercontent.com/1282659/34073577-eac8d346-e261-11e7-81c1-c3ea69da0d6e.png)
 ![detail](https://user-images.githubusercontent.com/1282659/34073578-ec7a7f46-e261-11e7-81ab-acb66608f5b9.png)
-![landscape](https://user-images.githubusercontent.com/1282659/34323817-8bf51524-e81e-11e7-9518-06dde6f523f0.png)
+![landscape](https://user-images.githubusercontent.com/1282659/34343808-55410bda-e9a1-11e7-9f1f-8c731bd33a12.png)
 ![fork](https://user-images.githubusercontent.com/1282659/34073579-eedd7a90-e261-11e7-8a1d-2e0386371248.png)
 
 Below screenshots demonstrate content provider with SQLiteDatabase CRUD operators: 
