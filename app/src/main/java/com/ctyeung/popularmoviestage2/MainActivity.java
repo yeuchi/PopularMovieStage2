@@ -1,5 +1,14 @@
 package com.ctyeung.popularmoviestage2;
 
+/*
+ * Picasso has issue with version 9 API 28
+ * https://github.com/square/picasso/issues/2019
+ *
+ * version 9 onward does requires secure network traffic by default
+ * set manifest-clear-text option for debugging.
+ *
+ * https://stackoverflow.com/questions/51902629/how-to-allow-all-network-connection-types-http-and-https-in-android-9-pie
+ */
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -74,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
         mNumbersList.smoothScrollToPosition(scrollY);
 
         // set scroll event listener
-        mNumbersList.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        mNumbersList.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {

@@ -120,11 +120,20 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.Numb
 
             Log.d(TAG, "onCreateViewHolder: number of ViewHolders created: " + _viewHolderCount);
 
+            // http://image.tmdb.org/t/p/w780//udDclJoHjfjb8Ekgsd4FDteOkCU.jpg  example
             Picasso.get()
                     .load(movie.getPosterUrl())
-                    .placeholder(R.drawable.placeholder)   // optional
-                    .error(R.drawable.placeholder)      // optional
-                    .into(viewHolderImage);
+                    //.placeholder(R.drawable.placeholder)   // optional
+                    //.error(R.drawable.placeholder)      // optional
+                    .into(viewHolderImage, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                        }
+                    });
         }
 
         @Override
