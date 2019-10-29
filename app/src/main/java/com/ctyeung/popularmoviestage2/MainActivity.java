@@ -350,8 +350,8 @@ public class MainActivity extends AppCompatActivity implements MovieGridAdapter.
 
         Intent intent = new Intent(this, DetailActivity.class);
         String mergeString = selectedMovie.getJSONString() + "_sep_" +
-                            trailerString + "_sep_" +
-                            reviewString;
+                trailerString + "_sep_" +
+                reviewString;
         intent.putExtra(Intent.EXTRA_TEXT, mergeString);
         startActivity(intent);
 /*

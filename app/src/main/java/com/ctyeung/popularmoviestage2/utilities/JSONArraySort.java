@@ -9,28 +9,28 @@ import org.json.JSONObject;
 
 public class JSONArraySort
 {
-    private JSONArray jsonArray;
-    private String key;
-    private JSONArray sorted;
+    private JSONArray _jsonArray;
+    private String _key;
+    private JSONArray _sorted;
 
     public JSONArraySort(JSONArray jsonArray, String key)
     {
-        this.jsonArray = jsonArray;
-        this.key = key;
+        this._jsonArray = jsonArray;
+        this._key = key;
     }
 
     public JSONArray sort() {
-        sorted = new JSONArray();
+        _sorted = new JSONArray();
 
         // step through all objects
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject json = JSONhelper.parseJsonFromArray(jsonArray, i);
-            String value = JSONhelper.parseValueByKey(json, key);
+        for (int i = 0; i < _jsonArray.length(); i++) {
+            JSONObject json = JSONhelper.parseJsonFromArray(_jsonArray, i);
+            String value = JSONhelper.parseValueByKey(json, _key);
             Double num = Double.parseDouble(value);
             int index = bisection(num);
-            sorted.put(index);
+            _sorted.put(index);
         }
-        return sorted;
+        return _sorted;
     }
 
     /*
@@ -39,13 +39,13 @@ public class JSONArraySort
     protected int bisection(Double num)
     {
         int leftIndex = 0;
-        int rightIndex = jsonArray.length()-1;
+        int rightIndex = _jsonArray.length()-1;
 
         while(rightIndex>leftIndex)
         {
             int midIndex = (rightIndex + leftIndex ) / 2;
-            JSONObject json = JSONhelper.parseJsonFromArray(jsonArray, midIndex);
-            String value = JSONhelper.parseValueByKey(json, key);
+            JSONObject json = JSONhelper.parseJsonFromArray(_jsonArray, midIndex);
+            String value = JSONhelper.parseValueByKey(json, _key);
             Double n = Double.parseDouble(value);
 
             if(n < num)

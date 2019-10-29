@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,12 +37,11 @@ import java.util.List;
 public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.NumberViewHolder> {
 
     private static final String TAG = MovieGridAdapter.class.getSimpleName();
-    final private ListItemClickListener mOnClickListener;
+    final private ListItemClickListener _onClickListener;
 
-
-    private int viewHolderCount;
-    private int mNumberItems;
-    private List<Movie> movies;
+    private int _viewHolderCount;
+    private List<Movie> _movies;
+    private Context _context;
 
     public interface ListItemClickListener
     {
@@ -50,22 +50,22 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.Numb
 
     public MovieGridAdapter(List<Movie> movies,
                             ListItemClickListener listener) {
-        this.movies = movies;
-        mOnClickListener = listener;
-        viewHolderCount = 0;
+        this._movies = movies;
+        _onClickListener = listener;
+        _viewHolderCount = 0;
     }
 
     @Override
     public NumberViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        Context context = viewGroup.getContext();
+        _context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.recyclerview_item;
-        LayoutInflater inflater = LayoutInflater.from(context);
+        LayoutInflater inflater = LayoutInflater.from(_context);
         boolean shouldAttachToParentImmediately = false;
 
         View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
         NumberViewHolder viewHolder = new NumberViewHolder(view);
 
-        viewHolderCount++;
+        _viewHolderCount++;
 
         return viewHolder;
     }
@@ -89,7 +89,7 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.Numb
 
     @Override
     public int getItemCount() {
-        return this.movies.size();
+        return this._movies.size();
     }
 
     /**
@@ -115,34 +115,23 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridAdapter.Numb
          */
         void bind(int position)
         {
-            Movie movie = movies.get(position);
+            Movie movie = _movies.get(position);
             viewHolderName.setText(movie.getTitle());
 
-            Log.d(TAG, "onCreateViewHolder: number of ViewHolders created: " + viewHolderCount);
+            Log.d(TAG, "onCreateViewHolder: number of ViewHolders created: " + _viewHolderCount);
 
-            Picasso.with(viewHolderImage.getContext())
+            Picasso.get()
                     .load(movie.getPosterUrl())
                     .placeholder(R.drawable.placeholder)   // optional
                     .error(R.drawable.placeholder)      // optional
-                    .into(viewHolderImage, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            //Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onError() {
-                            //Toast.makeText(context, "failed", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
+                    .into(viewHolderImage);
         }
 
         @Override
         public void onClick(View view)
         {
             int clickPosition = getAdapterPosition();
-            mOnClickListener.onListItemClick(clickPosition);
+            _onClickListener.onListItemClick(clickPosition);
         }
 
     }

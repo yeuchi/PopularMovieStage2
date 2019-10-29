@@ -185,22 +185,12 @@ public class DetailActivity extends AppCompatActivity
                 MovieHelper.getSizeByIndex(MovieHelper.INDEX_DETAIL) +
                 JSONhelper.parseValueByKey(this.json, MovieHelper.KEY_POSTER_PATH);
 
-        Picasso.with(context)
-                //.load("http://i.imgur.com/DvpvklR.png")
+        Picasso.get()
+                //.load("http://i.imgur.com/DvpvklR.png") example
                 .load(url)
                 .placeholder(R.drawable.placeholder)   // optional
                 .error(R.drawable.placeholder)      // optional
-                .into(ivPoster, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        //Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onError() {
-                        //Toast.makeText(getApplicationContext(), "failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                .into(ivPoster);
     }
 
     private void setBtnFavoriteText()
