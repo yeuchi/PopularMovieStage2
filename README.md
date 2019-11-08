@@ -1,7 +1,7 @@
 
-# Udacity project: PopularMovies - Stage 2 
+# Udacity project: PopularMovies - Stage 2 <img src="https://user-images.githubusercontent.com/1282659/68507718-2fb17200-0232-11ea-84c5-c22890309e46.png" width="40"> 
 
-### (Trailers, Reviews, and Favorites) <img src="https://user-images.githubusercontent.com/1282659/68507718-2fb17200-0232-11ea-84c5-c22890309e46.png" width="40"> 
+### (Trailers, Reviews, and Favorites) 
 
 Google Play: https://play.google.com/store/apps/details?id=com.ctyeung.popularmoviestage2
 
