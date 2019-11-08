@@ -1,21 +1,21 @@
 
-### Stage 2: Trailers, Reviews, and Favorites
+# Udacity project: PopularMovies - Stage 2
+### (Trailers, Reviews, and Favorites)
+
+Google Play: https://play.google.com/store/apps/details?id=com.ctyeung.popularmoviestage2
+
 ### User Experience
-In this stage you’ll add additional functionality to the app you built in Stage 1.
-
-
-You’ll add more information to your movie details view:
-
-- You’ll allow users to view and play trailers ( either in the youtube app or a web browser).
-- You’ll allow users to read reviews of a selected movie.
-- You’ll also allow users to mark a movie as a favorite in the details view by tapping a button(star). This is for a local movies collection that you will maintain and does not require an API request*.
-- You’ll modify the existing sorting criteria for the main view to include an additional pivot to show their favorites collection.
+- users to view and play trailers ( either in the youtube app or a web browser).
+- users to read reviews of a selected movie.
+- users to mark a movie as a favorite in the details view by tapping a button(star). 
+  This is for a local movies collection that you will maintain and does not require an API request*.
+- main view to include an additional pivot to show their favorites collection.
 
 ### Stage 2 - API Hints
 
 - To fetch trailers you will want to make a request to the /movie/{id}/videos endpoint.
 - To fetch reviews you will want to make a request to the /movie/{id}/reviews endpoint
-- You should use an Intent to open a youtube link in either the native app or a web browser of choice.
+- Use an Intent to open a youtube link in either the native app or a web browser of choice.
 
 ### Implementation demo
 
@@ -24,17 +24,12 @@ Below screenshots demonstrate pages: main -> detail -> trailer or review.
 ### 1080 x 1920 - 1 size only
 
 ### Portrait layout
-![screen shot 2017-12-14 at 6 40 21 pm](https://user-images.githubusercontent.com/1282659/34021237-46d6f678-e0fe-11e7-9793-7cc41c5cb069.png)
-![screen shot 2017-12-14 at 6 37 14 pm](https://user-images.githubusercontent.com/1282659/34021156-e60eec88-e0fd-11e7-8a34-8e6642d5d0c6.png)
-![portrait](https://user-images.githubusercontent.com/1282659/34343797-26868c70-e9a1-11e7-9905-909ef35da511.png)
-![screen shot 2017-12-15 at 5 03 35 pm](https://user-images.githubusercontent.com/1282659/34063806-2cf4f874-e1ba-11e7-84a0-f73e299ce8bb.png)
-![screen shot 2017-12-15 at 5 02 38 pm](https://user-images.githubusercontent.com/1282659/34063809-327879c4-e1ba-11e7-88f4-d3486a27b5a9.png)
+<img src="https://user-images.githubusercontent.com/1282659/34021237-46d6f678-e0fe-11e7-9793-7cc41c5cb069.png" width="200"> <img src="https://user-images.githubusercontent.com/1282659/34021156-e60eec88-e0fd-11e7-8a34-8e6642d5d0c6.png" width="200"> <img src="https://user-images.githubusercontent.com/1282659/34343797-26868c70-e9a1-11e7-9905-909ef35da511.png" width="200"> <img src="https://user-images.githubusercontent.com/1282659/34063806-2cf4f874-e1ba-11e7-84a0-f73e299ce8bb.png" width="200"> <img src="https://user-images.githubusercontent.com/1282659/34063809-327879c4-e1ba-11e7-88f4-d3486a27b5a9.png" width="200">
 
 ### Landscape layout
-![main](https://user-images.githubusercontent.com/1282659/34073577-eac8d346-e261-11e7-81c1-c3ea69da0d6e.png)
-![detail](https://user-images.githubusercontent.com/1282659/34073578-ec7a7f46-e261-11e7-81ab-acb66608f5b9.png)
-![landscape](https://user-images.githubusercontent.com/1282659/34343808-55410bda-e9a1-11e7-9f1f-8c731bd33a12.png)
-![fork](https://user-images.githubusercontent.com/1282659/34073579-eedd7a90-e261-11e7-8a1d-2e0386371248.png)
+
+<img src="https://user-images.githubusercontent.com/1282659/34073577-eac8d346-e261-11e7-81c1-c3ea69da0d6e.png" width="400"><img src="https://user-images.githubusercontent.com/1282659/34073578-ec7a7f46-e261-11e7-81ab-acb66608f5b9.png" width="400">
+<img src="https://user-images.githubusercontent.com/1282659/34343808-55410bda-e9a1-11e7-9f1f-8c731bd33a12.png" width="400"><img src="https://user-images.githubusercontent.com/1282659/34073579-eedd7a90-e261-11e7-8a1d-2e0386371248.png" width="400">
 
 Below screenshots demonstrate content provider with SQLiteDatabase CRUD operators: 
 
