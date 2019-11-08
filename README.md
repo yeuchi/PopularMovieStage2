@@ -8,7 +8,7 @@ Google Play: https://play.google.com/store/apps/details?id=com.ctyeung.popularmo
 - users to view and play trailers ( either in the youtube app or a web browser).
 - users to read reviews of a selected movie.
 - users to mark a movie as a favorite in the details view by tapping a button(star). 
-  This is for a local movies collection that you will maintain and does not require an API request*.
+  This is for a local movies collection that will maintain and does not require an API request*.
 - main view to include an additional pivot to show their favorites collection.
 
 ### Stage 2 - API Hints
@@ -56,12 +56,11 @@ db.insert(TABLE_NAME, null, values);
 ### delete
 db.execSQL("DELETE FROM " + TABLE_NAME+ " WHERE "+COLUMN_TITLE+"='"+selection+"'");
 
-![screen shot 2017-12-19 at 6 37 02 pm](https://user-images.githubusercontent.com/1282659/34185963-3c3d2f9a-e4ee-11e7-94f0-185cf6f608b1.png)
-![screen shot 2017-12-19 at 6 37 27 pm](https://user-images.githubusercontent.com/1282659/34185964-3c509076-e4ee-11e7-96c1-44732bf56dea.png)
+<img src="https://user-images.githubusercontent.com/1282659/34185963-3c3d2f9a-e4ee-11e7-94f0-185cf6f608b1.png" width="200"> <img src="https://user-images.githubusercontent.com/1282659/34185964-3c509076-e4ee-11e7-96c1-44732bf56dea.png" width="200">
 
 ### display favorite sorted (DESC)
-![screen shot 2017-12-19 at 8 45 16 pm](https://user-images.githubusercontent.com/1282659/34188751-91aaf39a-e4fd-11e7-85db-f9578ebfe6f3.png)
-![screen shot 2017-12-19 at 8 03 38 pm](https://user-images.githubusercontent.com/1282659/34187621-fa4d4a70-e4f7-11e7-8f00-2bf928dac3df.png)
+
+<img src="https://user-images.githubusercontent.com/1282659/34188751-91aaf39a-e4fd-11e7-85db-f9578ebfe6f3.png" width="200"> <img src="https://user-images.githubusercontent.com/1282659/34187621-fa4d4a70-e4f7-11e7-8f00-2bf928dac3df.png" width="200">
 
 ### Refinements in the future (for product grade)
 - tests and error handling.
