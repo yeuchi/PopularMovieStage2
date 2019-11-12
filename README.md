@@ -25,12 +25,12 @@ Below screenshots demonstrate pages: main -> detail -> trailer or review.
 ### 1080 x 1920 - 1 size only
 
 ### Portrait layout
-<img src="https://user-images.githubusercontent.com/1282659/34021237-46d6f678-e0fe-11e7-9793-7cc41c5cb069.png" width="200"> <img src="https://user-images.githubusercontent.com/1282659/34021156-e60eec88-e0fd-11e7-8a34-8e6642d5d0c6.png" width="200"> <img src="https://user-images.githubusercontent.com/1282659/34343797-26868c70-e9a1-11e7-9905-909ef35da511.png" width="200"> <img src="https://user-images.githubusercontent.com/1282659/34063806-2cf4f874-e1ba-11e7-84a0-f73e299ce8bb.png" width="200"> <img src="https://user-images.githubusercontent.com/1282659/34063809-327879c4-e1ba-11e7-88f4-d3486a27b5a9.png" width="200">
+<img src="https://user-images.githubusercontent.com/1282659/68701257-fd628600-054b-11ea-942f-1be434e65d25.jpg" width="200">  <img src="https://user-images.githubusercontent.com/1282659/68701265-02bfd080-054c-11ea-95f5-59b8f01c5663.jpg" width="200">  <img src="https://user-images.githubusercontent.com/1282659/68701277-094e4800-054c-11ea-9904-538beb13c9cf.jpg" width="200">  <img src="https://user-images.githubusercontent.com/1282659/68701280-0b180b80-054c-11ea-9bda-d9400c2f4a25.jpg" width="200"> 
 
 ### Landscape layout
 
-<img src="https://user-images.githubusercontent.com/1282659/34073577-eac8d346-e261-11e7-81c1-c3ea69da0d6e.png" width="400"><img src="https://user-images.githubusercontent.com/1282659/34073578-ec7a7f46-e261-11e7-81ab-acb66608f5b9.png" width="400">
-<img src="https://user-images.githubusercontent.com/1282659/34343808-55410bda-e9a1-11e7-9f1f-8c731bd33a12.png" width="400"><img src="https://user-images.githubusercontent.com/1282659/34073579-eedd7a90-e261-11e7-8a1d-2e0386371248.png" width="400">
+<img src="https://user-images.githubusercontent.com/1282659/68701383-474b6c00-054c-11ea-804f-a27f424b1faa.jpg" width="400"><img src="https://user-images.githubusercontent.com/1282659/68701393-4b778980-054c-11ea-9802-94901ef5c1f1.jpg" width="400">
+<img src="https://user-images.githubusercontent.com/1282659/68701402-4fa3a700-054c-11ea-800e-2da047b14efa.jpg" width="400"><img src="https://user-images.githubusercontent.com/1282659/68701413-529e9780-054c-11ea-8340-8752afbc811a.jpg" width="400">
 
 Below screenshots demonstrate content provider with SQLiteDatabase CRUD operators: 
 
