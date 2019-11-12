@@ -9,9 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autoLink="web"
-        android:layout_margin="5dp"
+        android:layout_margin="10dp"
         android:padding="10dp"
-        android:background="@drawable/arrow_shape"
+        android:background="@drawable/round_corner"
         android:gravity="left"/>
 
 </LinearLayout>

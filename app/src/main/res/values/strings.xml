@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PopularMoveStage2</string>
+    <string name="app_name">PopularMovie</string>
     <string name="sort_popular">Popular</string>
     <string name="sort_top_rated">Top Rated</string>
     <string name="sort_favorite">Favorite</string>
