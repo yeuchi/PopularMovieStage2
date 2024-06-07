@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import java.io.IOException
+import java.lang.Exception
 import java.net.URL
 
     /*
@@ -27,8 +28,10 @@ class GithubQueryTask(
         val searchUrl = urls[0]
         var githubSearchResults: String? = null
         try {
-            githubSearchResults = NetworkUtils.getResponseFromHttpUrl(searchUrl)
-        } catch (ex: IOException) {
+            searchUrl?.let {
+                githubSearchResults = NetworkUtils.getResponseFromHttpUrl(searchUrl)
+            } ?: throw Exception("missing url")
+        } catch (ex: Exception) {
             ex.printStackTrace()
         }
         return githubSearchResults
@@ -78,10 +81,14 @@ class GithubQueryTask(
         if (null != json) {
             val jsonArray = JSONhelper.getJsonArray(json, "results")
             val movies = ArrayList<Movie>()
-            for (i in 0 until jsonArray.length()) {
-                val json = JSONhelper.parseJsonFromArray(jsonArray, i)
-                val movie = Movie.create(json)
-                movies.add(i, movie)
+            jsonArray?.let {
+                for (i in 0 until jsonArray.length()) {
+                    val json = JSONhelper.parseJsonFromArray(jsonArray, i)
+                    json?.let {
+                        val movie = Movie.create(json)
+                        movies.add(i, movie)
+                    }
+                }
             }
             _event.emit(QueryEvent.Thumbs(movies))
         }

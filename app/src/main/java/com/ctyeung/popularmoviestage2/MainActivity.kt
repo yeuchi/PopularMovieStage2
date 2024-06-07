@@ -37,17 +37,17 @@ class MainActivity : AppCompatActivity(), MovieGridAdapter.ListItemClickListener
     private lateinit var mBinding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
 
-    var mAdapter: MovieGridAdapter? = null
-    val mToast: Toast? = null
-    var mListener: MovieGridAdapter.ListItemClickListener? = null
-    var movies = emptyList<Movie>()
+    private var mAdapter: MovieGridAdapter? = null
+    private val mToast: Toast? = null
+    private var mListener: MovieGridAdapter.ListItemClickListener = this
+    private var movies = emptyList<Movie>()
 
     //    var tvNetworkErrorDisplay: TextView? = null
 
     private var trailerString: String? = null
     private var reviewString: String? = null
-    var mSortMethod = MovieHelper.SORT_POPULAR
-    var scrollY = 0
+    private var mSortMethod = MovieHelper.SORT_POPULAR
+    private var scrollY = 0
     private var selectedMovie: Movie? = null
 
 //    var sharedPrefUtility: SharedPrefUtility? = null
@@ -114,7 +114,6 @@ class MainActivity : AppCompatActivity(), MovieGridAdapter.ListItemClickListener
     private fun initRecyclerList() {
         val layoutManager = GridLayoutManager(this, numberColumns())
         mBinding.rvMovie.setLayoutManager(layoutManager)
-        mListener = this
 //        sharedPrefUtility = SharedPrefUtility(getApplicationContext())
 //        requestMovies(sharedPrefUtility!!.sortMethod)
 
