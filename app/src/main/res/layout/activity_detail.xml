@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="start"
-    tools:context="com.ctyeung.popularmoviestage2.DetailActivity">
+    tools:context="com.ctyeung.popularmoviestage2.views.DetailActivity">
 
     <ScrollView
         android:id="@+id/sv_scroller"
@@ -109,7 +111,7 @@
                 android:textStyle="bold"
                 android:textSize="20dp"/>
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_trailers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -125,7 +127,7 @@
                 android:textSize="20dp"/>
 
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_reviews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -136,3 +138,5 @@
     </ScrollView>
 
 </LinearLayout>
+
+</layout>
