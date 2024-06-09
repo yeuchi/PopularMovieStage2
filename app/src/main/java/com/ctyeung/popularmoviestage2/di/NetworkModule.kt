@@ -12,7 +12,7 @@ import dagger.hilt.components.SingletonComponent
 object NetworkModule {
 
     @Provides
-    fun provideMovieNetworkRepository(repo: MovieRepository): MovieNetworkRepository {
-        return MovieNetworkRepository(movieRepository = repo)
+    fun provideMovieNetworkRepository(db: MovieRepository): MovieNetworkRepository {
+        return MovieNetworkRepository(db = db)
     }
 }

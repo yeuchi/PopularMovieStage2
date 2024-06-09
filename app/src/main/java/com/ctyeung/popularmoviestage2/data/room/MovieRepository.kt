@@ -8,4 +8,12 @@ class MovieRepository @Inject constructor(
     suspend fun retrieve():List<Movie> {
         return movieDao.getMovies()
     }
+
+    suspend fun insert(movie: Movie) {
+        movieDao.insert(movie)
+    }
+
+    suspend fun dropTable() {
+        movieDao.deleteAll()
+    }
 }

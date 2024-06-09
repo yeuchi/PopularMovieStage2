@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MovieNetworkRepository  @Inject constructor(
-    private val movieRepository: MovieRepository
+    private val db: MovieRepository
 ) {
     private val _event = MutableSharedFlow<NetworkEvent>()
     val event: SharedFlow<NetworkEvent> = _event
@@ -48,14 +48,30 @@ class MovieNetworkRepository  @Inject constructor(
     private fun listen4Event() {
         CoroutineScope(IO).launch {
             task?.event?.collect() {
-                val result = when(it){
-                    is QueryEvent.Thumbs -> NetworkEvent.Movies(it.list)
-                    is QueryEvent.Trailers -> NetworkEvent.Trailers(it.str)
-                    is QueryEvent.Reviews -> NetworkEvent.Reviews(it.str)
+                when(it){
+                    is QueryEvent.Thumbs -> onMovies(it.list)
+                    is QueryEvent.Trailers -> onTrailers(it.str)
+                    is QueryEvent.Reviews -> onReviews(it.str)
                 }
-                _event.emit(result)
             }
         }
+    }
+
+    private suspend fun onMovies(movies:List<Movie>) {
+        db.dropTable()
+        movies.forEach {
+            db.insert(it)
+        }
+        _event.emit(NetworkEvent.Movies(movies))
+    }
+
+    private suspend fun onTrailers(str:String?) {
+        _event.emit(NetworkEvent.Trailers(str))
+    }
+
+    private suspend fun onReviews(str:String?) {
+        _event.emit(NetworkEvent.Reviews(str))
+
     }
 }
 
