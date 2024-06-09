@@ -40,7 +40,6 @@ class MainActivity : AppCompatActivity(), MovieGridAdapter.ListItemClickListener
     private var mAdapter: MovieGridAdapter? = null
     private val mToast: Toast? = null
     private var mListener: MovieGridAdapter.ListItemClickListener = this
-    private var movies = emptyList<Movie>()
 
     //    var tvNetworkErrorDisplay: TextView? = null
 
@@ -48,7 +47,6 @@ class MainActivity : AppCompatActivity(), MovieGridAdapter.ListItemClickListener
     private var reviewString: String? = null
     private var mSortMethod = MovieHelper.SORT_POPULAR
     private var scrollY = 0
-    private var selectedMovie: Movie? = null
 
 //    var sharedPrefUtility: SharedPrefUtility? = null
 
@@ -79,8 +77,7 @@ class MainActivity : AppCompatActivity(), MovieGridAdapter.ListItemClickListener
     }
 
     private fun onMovies(list: List<Movie>) {
-        movies = list
-        mAdapter = MovieGridAdapter(movies, mListener)
+        mAdapter = MovieGridAdapter(viewModel.movies, mListener)
         mBinding.rvMovie.apply {
             setAdapter(mAdapter)
             setHasFixedSize(true)
@@ -89,7 +86,7 @@ class MainActivity : AppCompatActivity(), MovieGridAdapter.ListItemClickListener
 
     private fun onTrailers(str: String?) {
         trailerString = str
-        selectedMovie?.let {
+        viewModel.selectedMovie?.let {
             val id = it.id.toString()
             viewModel.requestReviews(it, id)
         }
@@ -101,9 +98,9 @@ class MainActivity : AppCompatActivity(), MovieGridAdapter.ListItemClickListener
     }
 
     private fun launchDetail() {
-        if (selectedMovie != null && trailerString != null && reviewString != null) {
+        if (viewModel.selectedMovie != null && trailerString != null && reviewString != null) {
             val intent = Intent(this, DetailActivity::class.java)
-            val mergeString: String = selectedMovie!!.toJson() + "_sep_" +
+            val mergeString: String = viewModel.selectedMovie!!.toJson() + "_sep_" +
                     trailerString + "_sep_" +
                     reviewString
             intent.putExtra(Intent.EXTRA_TEXT, mergeString)
@@ -175,8 +172,8 @@ class MainActivity : AppCompatActivity(), MovieGridAdapter.ListItemClickListener
     override fun onListItemClick(clickItemIndex: Int) {
         mToast?.cancel()
         // launch detail activity
-        selectedMovie = movies[clickItemIndex]
-        selectedMovie?.let {
+        viewModel.selectedMovie = viewModel.movies[clickItemIndex]
+        viewModel.selectedMovie?.let {
             val id = it.id.toString()
             viewModel.requestTrailers(it, id)
         }

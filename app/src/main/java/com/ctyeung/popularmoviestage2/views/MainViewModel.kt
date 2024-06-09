@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ctyeung.popularmoviestage2.data.network.MovieNetworkRepository
 import com.ctyeung.popularmoviestage2.data.network.NetworkEvent
+import com.ctyeung.popularmoviestage2.data.room.DaoEvent
 import com.ctyeung.popularmoviestage2.data.room.Movie
 import com.ctyeung.popularmoviestage2.data.room.MovieRepository
 import com.ctyeung.popularmoviestage2.data.utilities.MovieHelper
@@ -24,17 +25,54 @@ class MainViewModel @Inject constructor(
     private val _event = MutableSharedFlow<MainViewEvent>()
     val event: SharedFlow<MainViewEvent> = _event
 
+    var movies = emptyList<Movie>()
+    var selectedMovie: Movie? = null
+
     init {
+        listen4Network()
+        listen4DB()
+    }
+
+    private fun listen4Network() {
         viewModelScope.launch {
             network.event.collect() {
-                val result = when (it) {
-                    is NetworkEvent.Movies -> MainViewEvent.Movies(it.list)
-                    is NetworkEvent.Trailers -> MainViewEvent.Trailers(it.str)
-                    is NetworkEvent.Reviews -> MainViewEvent.Reviews(it.str)
+                when (it) {
+                    is NetworkEvent.Movies -> onMovies(it.list)
+                    is NetworkEvent.Trailers -> onTrailers(it.str)
+                    is NetworkEvent.Reviews -> onReviews(it.str)
                 }
-                _event.emit(result)
             }
         }
+    }
+
+    private fun listen4DB() {
+        viewModelScope.launch {
+            db.event.collect(){
+                when(it) {
+                    is DaoEvent.Retrieve -> {
+                        movies = it.movies
+                        _event.emit(MainViewEvent.Movies(it.movies))
+                    }
+
+                    is DaoEvent.Favorites -> {
+                        movies = it.movies
+                        _event.emit(MainViewEvent.Favorites(it.movies))
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun onMovies(list:List<Movie>) {
+        db.retrieve()
+    }
+
+    private suspend fun onTrailers(str: String?) {
+        _event.emit(MainViewEvent.Trailers(str))
+    }
+
+    private suspend fun onReviews(str: String?) {
+        _event.emit(MainViewEvent.Reviews(str))
     }
 
     /**
@@ -69,9 +107,7 @@ class MainViewModel @Inject constructor(
 
     private fun loadDbFavorites() {
         viewModelScope.launch(IO) {
-            db.retrieve().let {
-                _event.emit(MainViewEvent.Favorites(it))
-            }
+            db.favorites()
         }
     }
 
