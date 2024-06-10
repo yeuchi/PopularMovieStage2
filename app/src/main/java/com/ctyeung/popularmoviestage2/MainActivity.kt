@@ -33,13 +33,12 @@ import dagger.hilt.android.AndroidEntryPoint
  */
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), MovieGridAdapter.ListItemClickListener {
-    private lateinit var mBinding: ActivityMainBinding
+class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
 
     private var mAdapter: MovieGridAdapter? = null
     private val mToast: Toast? = null
-    private var mListener: MovieGridAdapter.ListItemClickListener = this
 
     //    var tvNetworkErrorDisplay: TextView? = null
 
@@ -53,9 +52,12 @@ class MainActivity : AppCompatActivity(), MovieGridAdapter.ListItemClickListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 //        mLoadingIndicator = findViewById<View>(R.id.pb_display_progress) as ProgressBar?
 //        tvNetworkErrorDisplay = findViewById<View>(R.id.tv_network_error_display) as TextView?
+
+        setSupportActionBar(binding.toolbar)
+
     }
 
     override fun onResume() {
@@ -77,8 +79,8 @@ class MainActivity : AppCompatActivity(), MovieGridAdapter.ListItemClickListener
     }
 
     private fun onMovies(list: List<Movie>) {
-        mAdapter = MovieGridAdapter(viewModel.movies, mListener)
-        mBinding.rvMovie.apply {
+        mAdapter = MovieGridAdapter(viewModel.movies, onListItemClick)
+        binding.rvMovie.apply {
             setAdapter(mAdapter)
             setHasFixedSize(true)
         }
@@ -110,7 +112,7 @@ class MainActivity : AppCompatActivity(), MovieGridAdapter.ListItemClickListener
 
     private fun initRecyclerList() {
         val layoutManager = GridLayoutManager(this, numberColumns())
-        mBinding.rvMovie.setLayoutManager(layoutManager)
+        binding.rvMovie.setLayoutManager(layoutManager)
 //        sharedPrefUtility = SharedPrefUtility(getApplicationContext())
 //        requestMovies(sharedPrefUtility!!.sortMethod)
 
@@ -119,7 +121,7 @@ class MainActivity : AppCompatActivity(), MovieGridAdapter.ListItemClickListener
 //        mBinding.rvMovie.smoothScrollToPosition(scrollY)
 
         // set scroll event listener
-        mBinding.rvMovie.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.rvMovie.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 scrollY += dy
 //                sharedPrefUtility!!.setScroll(SharedPrefUtility.MAIN_SCROLL, scrollY)
@@ -144,35 +146,28 @@ class MainActivity : AppCompatActivity(), MovieGridAdapter.ListItemClickListener
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val itemId = item.itemId
+        mSortMethod = when (itemId) {
+            R.id.sort_popular -> MovieHelper.SORT_POPULAR
+            R.id.sort_top_rated -> MovieHelper.SORT_TOP_RATED
+            R.id.sort_favorite -> MovieHelper.SORT_FAVORITE
 
-//        switch (itemId) {
-//            case R.id.sort_popular:
-//                mSortMethod = MovieHelper.SORT_POPULAR;
-//                break;
-//
-//            case R.id.sort_top_rated:
-//                mSortMethod = MovieHelper.SORT_TOP_RATED;
-//                break;
-//
-//            case R.id.sort_favorite:
-//                mSortMethod = MovieHelper.SORT_FAVORITE;
-//                break;
-//
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
+            /* no such thing */
+            else ->
+                return super.onOptionsItemSelected(item)
+        }
+
         mSortMethod = MovieHelper.SORT_POPULAR
         scrollY = 0
 //        sharedPrefUtility!!.setScroll(SharedPrefUtility.MAIN_SCROLL, scrollY)
 //        sharedPrefUtility!!.setSortMethod(mSortMethod)
-//        requestMovies(mSortMethod)
+        viewModel.request(mSortMethod)
         return true
     }
 
-    override fun onListItemClick(clickItemIndex: Int) {
+    private val onListItemClick: (clickItemIndex: Int) -> Unit = { i ->
         mToast?.cancel()
         // launch detail activity
-        viewModel.selectedMovie = viewModel.movies[clickItemIndex]
+        viewModel.selectedMovie = viewModel.movies[i]
         viewModel.selectedMovie?.let {
             val id = it.id.toString()
             viewModel.requestTrailers(it, id)

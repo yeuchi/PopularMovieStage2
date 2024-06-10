@@ -46,6 +46,8 @@ dependencies {
     implementation("com.squareup.picasso:picasso:2.8")
 
     implementation("com.google.dagger:hilt-android:2.48")
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     kapt("com.google.dagger:hilt-android-compiler:2.48")
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.1")

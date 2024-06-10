@@ -33,14 +33,10 @@ import com.squareup.picasso.Picasso
  */
 class MovieGridAdapter(
     private val _movies: List<Movie>,
-    private val _onClickListener: ListItemClickListener
+    private val itemClick: (clickItemIndex: Int)->Unit,
 ) : RecyclerView.Adapter<MovieGridAdapter.NumberViewHolder>() {
     private var _viewHolderCount = 0
     private var _context: Context? = null
-
-    interface ListItemClickListener {
-        fun onListItemClick(clickItemIndex: Int)
-    }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): NumberViewHolder {
         _context = viewGroup.context
@@ -109,7 +105,7 @@ class MovieGridAdapter(
 
         override fun onClick(view: View) {
             val clickPosition = getAdapterPosition()
-            _onClickListener.onListItemClick(clickPosition)
+            itemClick(clickPosition)
         }
     }
 

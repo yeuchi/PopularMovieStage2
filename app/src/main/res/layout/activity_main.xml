@@ -1,10 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-<RelativeLayout
-    android:layout_gravity="center"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:context=".MainActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            app:title="@string/app_name"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <GridLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        tools:context="com.ctyeung.popularmoviestage2.MainActivity"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_movie"
+            android:layout_gravity="top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </GridLayout>
 
     <TextView
         android:id="@+id/tv_network_error_display"
@@ -15,7 +49,11 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:textSize="22sp"
-        android:text="@string/network_error"/>
+        android:text="@string/network_error"
+        app:layout_constraintTop_toBottomOf="@+id/pb_display_progress"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
 
     <ProgressBar
         android:id="@+id/pb_display_progress"
@@ -24,24 +62,12 @@
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         />
-
-    <GridLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black"
-        tools:context="com.ctyeung.popularmoviestage2.MainActivity">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_movie"
-            android:layout_gravity="top"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-    </GridLayout>
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 
 
