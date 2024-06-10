@@ -29,7 +29,7 @@ class MainViewModel @Inject constructor(
     var selectedMovie: Movie? = null
 
     init {
-        listen4DB()
+//        listen4DB()
         listen4Network()
     }
 
@@ -45,26 +45,28 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun listen4DB() {
-        viewModelScope.launch {
-            db.event.collect() {
-                when (it) {
-                    is DaoEvent.Retrieve -> {
-                        movies = it.movies
-                        _event.emit(MainViewEvent.Movies(it.movies))
-                    }
-
-                    is DaoEvent.Favorites -> {
-                        movies = it.movies
-                        _event.emit(MainViewEvent.Favorites(it.movies))
-                    }
-                }
-            }
-        }
-    }
+//    private fun listen4DB() {
+//        viewModelScope.launch {
+//            db.event.collect() {
+//                when (it) {
+//                    is DaoEvent.Retrieve -> {
+//                        movies = it.movies
+//                        _event.emit(MainViewEvent.Movies(it.movies))
+//                    }
+//
+//                    is DaoEvent.Favorites -> {
+//                        movies = it.movies
+//                        _event.emit(MainViewEvent.Favorites(it.movies))
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     private suspend fun onMovies(list: List<Movie>) {
-        db.retrieve()
+//        db.retrieve()
+        movies = list
+        _event.emit(MainViewEvent.Movies(list))
     }
 
     private suspend fun onTrailers(str: String?) {
