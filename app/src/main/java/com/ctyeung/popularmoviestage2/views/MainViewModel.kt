@@ -25,11 +25,12 @@ class MainViewModel @Inject constructor(
     private val _event = MutableSharedFlow<MainViewEvent>()
     val event: SharedFlow<MainViewEvent> = _event
 
+    var favorites = emptyList<Movie>()
     var movies = emptyList<Movie>()
     var selectedMovie: Movie? = null
 
     init {
-//        listen4DB()
+        listen4DB()
         listen4Network()
     }
 
@@ -45,26 +46,23 @@ class MainViewModel @Inject constructor(
         }
     }
 
-//    private fun listen4DB() {
-//        viewModelScope.launch {
-//            db.event.collect() {
-//                when (it) {
-//                    is DaoEvent.Retrieve -> {
-//                        movies = it.movies
-//                        _event.emit(MainViewEvent.Movies(it.movies))
-//                    }
-//
-//                    is DaoEvent.Favorites -> {
-//                        movies = it.movies
-//                        _event.emit(MainViewEvent.Favorites(it.movies))
-//                    }
-//                }
-//            }
-//        }
-//    }
+    private fun listen4DB() {
+        viewModelScope.launch {
+            db.event.collect() {
+                when (it) {
+                    is DaoEvent.Retrieve -> {
+                        movies = it.movies
+                    }
+
+                    is DaoEvent.Favorites -> {
+                        favorites = it.movies
+                    }
+                }
+            }
+        }
+    }
 
     private suspend fun onMovies(list: List<Movie>) {
-//        db.retrieve()
         movies = list
         _event.emit(MainViewEvent.Movies(list))
     }
@@ -81,16 +79,10 @@ class MainViewModel @Inject constructor(
      * load movie thumbs for main page
      */
     fun request(sortMethod: String) {
-
         when (sortMethod) {
             MovieHelper.SORT_FAVORITE -> {
-                if (movies.isNotEmpty()) {
-                    loadDbFavorites()
-                } else {
-                    /*
-                     * TODO better solution ?
-                     */
-                    loadFromNetwork(MovieHelper.SORT_POPULAR)
+                viewModelScope.launch {
+                    _event.emit(MainViewEvent.Favorites(favorites))
                 }
             }
 
@@ -116,12 +108,6 @@ class MainViewModel @Inject constructor(
 
         viewModelScope.launch(IO) {
             network.requestReviews(selectedMovie, id)
-        }
-    }
-
-    private fun loadDbFavorites() {
-        viewModelScope.launch(IO) {
-            db.favorites()
         }
     }
 

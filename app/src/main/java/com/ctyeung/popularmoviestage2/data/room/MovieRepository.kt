@@ -17,10 +17,7 @@ class MovieRepository @Inject constructor(
     }
 
     suspend fun favorites() {
-        /*
-         * TODO change to query for favorite
-         */
-        movieDao.getMovies().collect(){
+        movieDao.getFavorites().collect(){
             _event.emit(DaoEvent.Favorites(it))
         }
     }

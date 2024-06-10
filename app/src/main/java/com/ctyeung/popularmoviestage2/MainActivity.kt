@@ -36,28 +36,22 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
-
     private var mAdapter: MovieGridAdapter? = null
     private val mToast: Toast? = null
-
-    //    var tvNetworkErrorDisplay: TextView? = null
+//    var tvNetworkErrorDisplay: TextView? = null
 
     private var trailerString: String? = null
     private var reviewString: String? = null
     private var mSortMethod = MovieHelper.SORT_POPULAR
     private var scrollY = 0
-
 //    var sharedPrefUtility: SharedPrefUtility? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 //        mLoadingIndicator = findViewById<View>(R.id.pb_display_progress) as ProgressBar?
 //        tvNetworkErrorDisplay = findViewById<View>(R.id.tv_network_error_display) as TextView?
-
         setSupportActionBar(binding.toolbar)
-
     }
 
     override fun onResume() {
@@ -79,7 +73,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onMovies(list: List<Movie>) {
-        mAdapter = MovieGridAdapter(viewModel.movies, onListItemClick)
+        mAdapter = MovieGridAdapter(list, onListItemClick)
         binding.rvMovie.apply {
             setAdapter(mAdapter)
             setHasFixedSize(true)
@@ -167,10 +161,18 @@ class MainActivity : AppCompatActivity() {
     private val onListItemClick: (clickItemIndex: Int) -> Unit = { i ->
         mToast?.cancel()
         // launch detail activity
-        viewModel.selectedMovie = viewModel.movies[i]
-        viewModel.selectedMovie?.let {
-            val id = it.id.toString()
-            viewModel.requestTrailers(it, id)
+
+        viewModel.apply {
+            selectedMovie = if (mSortMethod == MovieHelper.SORT_FAVORITE) {
+                favorites[i]
+            } else {
+                movies[i]
+            }
+
+            selectedMovie?.let {
+                val id = it.id.toString()
+                viewModel.requestTrailers(it, id)
+            }
         }
     }
 }

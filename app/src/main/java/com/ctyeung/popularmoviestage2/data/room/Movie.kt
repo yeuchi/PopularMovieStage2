@@ -30,7 +30,8 @@ data class Movie (
     @SerializedName("vote_average")
     val voteAverage:Double,
     @SerializedName("vote_count")
-    val voteCount:Int
+    val voteCount:Int,
+    var isFavorite:Boolean = false
 ) {
     companion object {
         fun parse(json: String): Movie {
@@ -53,7 +54,8 @@ data class Movie (
                     getString("title"),
                     getBoolean("video"),
                     getDouble("vote_average"),
-                    getInt("vote_count")
+                    getInt("vote_count"),
+                    false
                 )
                 return movie
             }
