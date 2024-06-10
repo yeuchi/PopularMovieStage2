@@ -6,7 +6,7 @@ Being updated to latest Kotlin/Jetpack: june 7, 2024
 
 
 ### Android Studio
-Iguana 2023.2.1 Patch 2 April 3, 2024
+Iguana 2023.2.1 Patch 2 April 3, 2024\
 <img width="500" src="https://github.com/yeuchi/LinearRegression/assets/1282659/4faf30c4-4425-4201-846b-b5bd32c9fc42"/>
 
 ### Test Device
