@@ -12,9 +12,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import com.ctyeung.popularmoviestage2.R
+import com.ctyeung.popularmoviestage2.data.room.Movie
 import com.ctyeung.popularmoviestage2.data.utilities.JSONhelper
 import com.ctyeung.popularmoviestage2.data.utilities.MovieHelper
 import com.ctyeung.popularmoviestage2.databinding.ActivityDetailBinding
+import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONArray
@@ -25,19 +27,13 @@ import org.json.JSONObject
 */
 @AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
-    private lateinit var binding:ActivityDetailBinding
-    private val viewModel:DetailViewModel by viewModels()
+    private lateinit var binding: ActivityDetailBinding
+    private val viewModel: DetailViewModel by viewModels()
 
-    /*
-     * TODO move to ViewModel
-     */
     private var _toast: Toast? = null
     private var mTrailerJsonArray: JSONArray? = null
     private var mReviewJsonArray: JSONArray? = null
-    private var id: String? = null
-    private var json: JSONObject? = null
-    private var title: String? = null
-    private val isFavorite = false
+
 
     //    private SharedPrefUtility sharedPrefUtility;
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,7 +75,7 @@ class DetailActivity : AppCompatActivity() {
     private fun parseJSONContent() {
         val str = this.intent.getStringExtra(Intent.EXTRA_TEXT)
         val list = str!!.split("_sep_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        json = JSONhelper.parseJson(list[0])
+        viewModel.parseJson(list[0])
         mTrailerJsonArray = JSONhelper.getJsonArray(list[1], "results")
         mReviewJsonArray = JSONhelper.getJsonArray(list[2], "results")
     }
@@ -94,8 +90,8 @@ class DetailActivity : AppCompatActivity() {
                 layoutParams.height = size * 180
                 setHasFixedSize(true)
             }
-            val header = findViewById<View>(R.id.tv_trailer_header) as TextView
-            header.text = size.toString() + " " + getString(R.string.trailer_header)
+            binding.tvTrailerHeader.text =
+                size.toString() + " " + getString(R.string.trailer_header)
         }
 
         mReviewJsonArray?.let {
@@ -106,21 +102,20 @@ class DetailActivity : AppCompatActivity() {
                 setAdapter(mReviewAdapter)
                 setHasFixedSize(true)
             }
-            val header = findViewById<View>(R.id.tv_review_header) as TextView
-            header.text = size.toString() + " " + getString(R.string.review_header)
+            binding.tvReviewHeader.text = size.toString() + " " + getString(R.string.review_header)
         }
     }
 
     private fun initializeElements() {
-        json?.let {
-            id = JSONhelper.parseValueByKey(it, MovieHelper.KEY_ID)
-            val voteAverage = JSONhelper.parseValueByKey(it, MovieHelper.KEY_VOTE_AVERAGE)
+
+        viewModel.apply {
+            val voteAverage = movie?.voteAverage
             binding.tvRating.text = getString(R.string.vote_average) + voteAverage
-            val date = JSONhelper.parseValueByKey(it, MovieHelper.KEY_RELEASE_DATE)
+            val date = movie?.releaseDate
             binding.tvReleaseDate.text = getString(R.string.date) + date
-            val plot = JSONhelper.parseValueByKey(it, MovieHelper.KEY_PLOT)
+            val plot = movie?.overview
             binding.tvPlot.text = plot
-            title = JSONhelper.parseValueByKey(it, MovieHelper.KEY_ORIGINAL_TITLE)
+            title = movie?.originalTitle
             binding.tvOriginalTitle.text = getString(R.string.title) + title
 
             // query db -- isFavorite if exists
@@ -132,16 +127,11 @@ class DetailActivity : AppCompatActivity() {
 //                args,
 //                "title DESC");
 
-//        this.isFavorite = (0==cursor.getCount())? false : true;
-
             // label button pending on query result
-            val button = findViewById<View>(R.id.btnFavorite) as TextView
-            button.setOnClickListener(buttonListener)
+            binding.btnFavorite.setOnClickListener(buttonListener)
             setBtnFavoriteText()
             val context = applicationContext
-            val url = MovieHelper.BASE_POSTER_URL +
-                    MovieHelper.getSizeByIndex(MovieHelper.INDEX_DETAIL) +
-                    JSONhelper.parseValueByKey(it, MovieHelper.KEY_POSTER_PATH)
+            val url = movie?.posterDetailPath()
             Picasso.get() //.load("http://i.imgur.com/DvpvklR.png") example
                 .load(url)
                 .placeholder(R.drawable.placeholder) // optional
@@ -151,44 +141,23 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun setBtnFavoriteText() {
-        val button = findViewById<View>(R.id.btnFavorite) as Button
-        val stringIndex = if (isFavorite) R.string.remove_favorite else R.string.mark_as_favorite
-        button.text = getString(stringIndex)
+        val stringIndex = if (viewModel.isFavorite) R.string.remove_favorite else R.string.mark_as_favorite
+        binding.btnFavorite.text = getString(stringIndex)
     }
 
     private val buttonListener = View.OnClickListener {
-        // Perform action on click -- favorite movie selected !
-//            ContentValues contentValues = new ContentValues();
-//            contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, title);
-//            contentValues.put(MovieContract.MovieEntry.COLUMN_JSON_DETAIL, json.toString());
-//
-//            Uri uri = null;
-//
-//            if(isFavorite)
-//            {
-//                // delete
-//                getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI, title, null);
-//            }
-//            else
-//            {
-//                // Insert the content values via a ContentResolver
-//                uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
-//            }
-//
-//            isFavorite = !isFavorite;
-//            setBtnFavoriteText();
-//
+        viewModel.selectFavorite()
+        setBtnFavoriteText();
 //            if(uri != null)
 //                Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
     }
 
-    private val onListItemClick:(
+    private val onListItemClick: (
         clickItemIndex: Int,
         isVideo: Boolean
-    )->Unit =  {index, isVideo->
+    ) -> Unit = { index, isVideo ->
         if (_toast != null) _toast!!.cancel()
 
-        // launch detail activity
         val jsonArray = if (isVideo) mTrailerJsonArray else mReviewJsonArray
         jsonArray?.let {
             val json = JSONhelper.parseJsonFromArray(jsonArray, index)

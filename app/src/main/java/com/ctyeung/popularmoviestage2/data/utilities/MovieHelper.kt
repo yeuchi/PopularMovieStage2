@@ -29,6 +29,7 @@ object MovieHelper {
     const val PARAM_API_V = "v"
     const val INDEX_THUMBNAIL = 5
     const val INDEX_DETAIL = 3
+    const val IS_FAVORITE = "isFavorite"
     const val BASE_YOUTUBE_URL = "https://www.youtube.com/watch?v="
     fun getSizeByIndex(i: Int): String {
         return when (i) {
