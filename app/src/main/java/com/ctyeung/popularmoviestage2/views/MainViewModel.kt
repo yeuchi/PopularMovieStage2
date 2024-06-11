@@ -35,7 +35,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun listen4Network() {
-        viewModelScope.launch {
+        viewModelScope.launch(IO) {
             network.event.collect() {
                 when (it) {
                     is NetworkEvent.Movies -> onMovies(it.list)
@@ -47,11 +47,17 @@ class MainViewModel @Inject constructor(
     }
 
     private fun listen4DB() {
-        viewModelScope.launch {
+        viewModelScope.launch(IO) {
             db.event.collect() {
                 when (it) {
-                    is DaoEvent.Retrieve -> {
+                    is DaoEvent.RetrieveAll -> {
                         movies = it.movies
+                    }
+
+                    is DaoEvent.Retrieve -> {
+                        /*
+                         * TODO handle request
+                         */
                     }
 
                     is DaoEvent.Favorites -> {
@@ -81,7 +87,7 @@ class MainViewModel @Inject constructor(
     fun request(sortMethod: String) {
         when (sortMethod) {
             MovieHelper.SORT_FAVORITE -> {
-                viewModelScope.launch {
+                viewModelScope.launch(IO) {
                     _event.emit(MainViewEvent.Favorites(favorites))
                 }
             }
@@ -95,7 +101,6 @@ class MainViewModel @Inject constructor(
         selectedMovie: Movie,
         id: String
     ) {
-
         viewModelScope.launch(IO) {
             network.requestTrailers(selectedMovie, id)
         }
@@ -105,7 +110,6 @@ class MainViewModel @Inject constructor(
         selectedMovie: Movie,
         id: String
     ) {
-
         viewModelScope.launch(IO) {
             network.requestReviews(selectedMovie, id)
         }

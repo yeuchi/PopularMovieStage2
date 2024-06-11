@@ -9,15 +9,21 @@ class MovieRepository @Inject constructor(
 ) {
 
     private val _event = MutableSharedFlow<DaoEvent>()
-    val event : SharedFlow<DaoEvent> = _event
-    suspend fun retrieve() {
-        movieDao.getMovies().collect(){
+    val event: SharedFlow<DaoEvent> = _event
+    suspend fun retrieveAll() {
+        movieDao.getMovies().collect() {
+            _event.emit(DaoEvent.RetrieveAll(it))
+        }
+    }
+
+    suspend fun retrieve(title:String) {
+        movieDao.getMovie(title).let {
             _event.emit(DaoEvent.Retrieve(it))
         }
     }
 
     suspend fun favorites() {
-        movieDao.getFavorites().collect(){
+        movieDao.getFavorites().collect() {
             _event.emit(DaoEvent.Favorites(it))
         }
     }
@@ -32,6 +38,7 @@ class MovieRepository @Inject constructor(
 }
 
 sealed class DaoEvent() {
-    data class Retrieve(val movies:List<Movie>):DaoEvent()
-    data class Favorites(val movies:List<Movie>):DaoEvent()
+    data class RetrieveAll(val movies: List<Movie>) : DaoEvent()
+    data class Retrieve(val movie: Movie?=null) : DaoEvent()
+    data class Favorites(val movies: List<Movie>) : DaoEvent()
 }

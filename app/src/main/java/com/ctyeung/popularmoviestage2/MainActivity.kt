@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -14,8 +13,8 @@ import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ctyeung.popularmoviestage2.data.room.Movie
-import com.ctyeung.popularmoviestage2.databinding.ActivityMainBinding
 import com.ctyeung.popularmoviestage2.data.utilities.MovieHelper
+import com.ctyeung.popularmoviestage2.databinding.ActivityMainBinding
 import com.ctyeung.popularmoviestage2.views.DetailActivity
 import com.ctyeung.popularmoviestage2.views.MainViewEvent
 import com.ctyeung.popularmoviestage2.views.MainViewModel
@@ -23,34 +22,27 @@ import com.ctyeung.popularmoviestage2.views.MovieGridAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 /*
- * Picasso has issue with version 9 API 28
- * https://github.com/square/picasso/issues/2019
- *
- * version 9 onward does requires secure network traffic by default
- * set manifest-clear-text option for debugging.
- *
- * https://stackoverflow.com/questions/51902629/how-to-allow-all-network-connection-types-http-and-https-in-android-9-pie
+ * TODO
+ *  a. progress UI
+ *  b. error handling (db, network, etc)
+ *  c. ScrollY ?
+ *  d. Trailer/Review data classes ?
+ *  e. msg when no favorites has been selected - blank list
  */
-
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
     private var mAdapter: MovieGridAdapter? = null
-    private val mToast: Toast? = null
-//    var tvNetworkErrorDisplay: TextView? = null
 
     private var trailerString: String? = null
     private var reviewString: String? = null
     private var mSortMethod = MovieHelper.SORT_POPULAR
     private var scrollY = 0
-//    var sharedPrefUtility: SharedPrefUtility? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-//        mLoadingIndicator = findViewById<View>(R.id.pb_display_progress) as ProgressBar?
-//        tvNetworkErrorDisplay = findViewById<View>(R.id.tv_network_error_display) as TextView?
         setSupportActionBar(binding.toolbar)
     }
 
@@ -107,18 +99,11 @@ class MainActivity : AppCompatActivity() {
     private fun initRecyclerList() {
         val layoutManager = GridLayoutManager(this, numberColumns())
         binding.rvMovie.setLayoutManager(layoutManager)
-//        sharedPrefUtility = SharedPrefUtility(getApplicationContext())
-//        requestMovies(sharedPrefUtility!!.sortMethod)
-
-        // scroll to expected position
-//        scrollY = sharedPrefUtility!!.getScrollPos(SharedPrefUtility.MAIN_SCROLL)
-//        mBinding.rvMovie.smoothScrollToPosition(scrollY)
 
         // set scroll event listener
         binding.rvMovie.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 scrollY += dy
-//                sharedPrefUtility!!.setScroll(SharedPrefUtility.MAIN_SCROLL, scrollY)
             }
         })
     }
@@ -150,18 +135,16 @@ class MainActivity : AppCompatActivity() {
                 return super.onOptionsItemSelected(item)
         }
 
+        /*
+         * TODO remove when sort methdos implemented
+         */
         mSortMethod = MovieHelper.SORT_POPULAR
         scrollY = 0
-//        sharedPrefUtility!!.setScroll(SharedPrefUtility.MAIN_SCROLL, scrollY)
-//        sharedPrefUtility!!.setSortMethod(mSortMethod)
         viewModel.request(mSortMethod)
         return true
     }
 
     private val onListItemClick: (clickItemIndex: Int) -> Unit = { i ->
-        mToast?.cancel()
-        // launch detail activity
-
         viewModel.apply {
             selectedMovie = if (mSortMethod == MovieHelper.SORT_FAVORITE) {
                 favorites[i]
@@ -171,7 +154,7 @@ class MainActivity : AppCompatActivity() {
 
             selectedMovie?.let {
                 val id = it.id.toString()
-                viewModel.requestTrailers(it, id)
+                requestTrailers(it, id)
             }
         }
     }

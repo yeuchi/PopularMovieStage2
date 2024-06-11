@@ -1,15 +1,18 @@
 package com.ctyeung.popularmoviestage2.views
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ctyeung.popularmoviestage2.data.room.Movie
 import com.ctyeung.popularmoviestage2.data.room.MovieRepository
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    db: MovieRepository
+    private val db: MovieRepository
 ) : ViewModel() {
 
     var movie: Movie? = null
@@ -52,8 +55,11 @@ class DetailViewModel @Inject constructor(
     }
 
     fun selectFavorite() {
-        /*
-         * TODO update isFavorite in DB, memory and DB
-         */
+        viewModelScope.launch(IO) {
+            movie?.apply {
+                isFavorite = !isFavorite
+                db.insert(this)
+            }
+        }
     }
 }
