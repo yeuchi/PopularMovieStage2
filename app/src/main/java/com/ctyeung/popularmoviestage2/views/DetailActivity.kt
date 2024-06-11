@@ -4,27 +4,19 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import com.ctyeung.popularmoviestage2.R
-import com.ctyeung.popularmoviestage2.data.room.Movie
 import com.ctyeung.popularmoviestage2.data.utilities.JSONhelper
 import com.ctyeung.popularmoviestage2.data.utilities.MovieHelper
 import com.ctyeung.popularmoviestage2.databinding.ActivityDetailBinding
-import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONArray
-import org.json.JSONObject
 
-/*
-* TODO use data-binding
-*/
 @AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
@@ -109,28 +101,14 @@ class DetailActivity : AppCompatActivity() {
     private fun initializeElements() {
 
         viewModel.apply {
-            val voteAverage = movie?.voteAverage
             binding.tvRating.text = getString(R.string.vote_average) + voteAverage
-            val date = movie?.releaseDate
-            binding.tvReleaseDate.text = getString(R.string.date) + date
-            val plot = movie?.overview
+            binding.tvReleaseDate.text = getString(R.string.date) + releaseDate
             binding.tvPlot.text = plot
-            title = movie?.originalTitle
             binding.tvOriginalTitle.text = getString(R.string.title) + title
-
-            // query db -- isFavorite if exists
-            val columns = arrayOf("title")
-            val args = arrayOf(title)
-            //        Cursor cursor = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
-//                columns,
-//                "title=?",
-//                args,
-//                "title DESC");
 
             // label button pending on query result
             binding.btnFavorite.setOnClickListener(buttonListener)
             setBtnFavoriteText()
-            val context = applicationContext
             val url = movie?.posterDetailPath()
             Picasso.get() //.load("http://i.imgur.com/DvpvklR.png") example
                 .load(url)
@@ -141,7 +119,8 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun setBtnFavoriteText() {
-        val stringIndex = if (viewModel.isFavorite) R.string.remove_favorite else R.string.mark_as_favorite
+        val stringIndex =
+            if (viewModel.isFavorite) R.string.remove_favorite else R.string.mark_as_favorite
         binding.btnFavorite.text = getString(stringIndex)
     }
 

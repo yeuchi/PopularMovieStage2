@@ -1,34 +1,59 @@
 package com.ctyeung.popularmoviestage2.views
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.ctyeung.popularmoviestage2.data.room.Movie
 import com.ctyeung.popularmoviestage2.data.room.MovieRepository
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import org.json.JSONObject
 import javax.inject.Inject
 
-/*
- * TODO migrate to Kotlin
- */
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     db: MovieRepository
 ) : ViewModel() {
 
     var movie: Movie? = null
-    var id: Int? = null
-    var title: String? = null
-    var isFavorite = false
+    val id: Int?
+        get() {
+            return movie?.id
+        }
+    val title: String?
+        get() {
+            return movie?.title
+        }
+
+    val originalTitle: String?
+        get() {
+            return movie?.originalTitle
+        }
+
+    val isFavorite: Boolean
+        get() {
+            return movie?.isFavorite ?: false
+        }
+
+    val releaseDate: String?
+        get() {
+            return movie?.releaseDate
+        }
+
+    val plot: String?
+        get() {
+            return movie?.overview
+        }
+
+    val voteAverage: Double
+        get() {
+            return movie?.voteAverage ?: 0.0
+        }
+
     fun parseJson(jsonString: String) {
         movie = Gson().fromJson(jsonString, Movie::class.java)
-        id = movie?.id
-        title = movie?.title
-        isFavorite = movie?.isFavorite?:false
     }
 
     fun selectFavorite() {
+        /*
+         * TODO update isFavorite in DB, memory and DB
+         */
     }
 }
