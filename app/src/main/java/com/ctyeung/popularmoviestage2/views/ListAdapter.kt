@@ -32,7 +32,10 @@ import org.json.JSONArray
  */
 class ListAdapter(
     private val mNumberItems: Int,
-    private val mClickListener: ListItemClickListener,
+    private val mClickListener: (
+        clickItemIndex: Int,
+        isVideo: Boolean
+    ) -> Unit,
     private val mJsonArray: JSONArray,
     isVideo: Boolean
 ) : RecyclerView.Adapter<ListAdapter.NumberViewHolder>() {
@@ -121,7 +124,7 @@ class ListAdapter(
 
         override fun onClick(view: View) {
             val clickPosition = getAdapterPosition()
-            mClickListener.onListItemClick(clickPosition, mIsVideo)
+            mClickListener(clickPosition, mIsVideo)
         }
     }
 

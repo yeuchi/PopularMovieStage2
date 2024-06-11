@@ -5,16 +5,16 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.ImageView
-import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.ctyeung.popularmoviestage2.R
 import com.ctyeung.popularmoviestage2.data.utilities.JSONhelper
 import com.ctyeung.popularmoviestage2.data.utilities.MovieHelper
+import com.ctyeung.popularmoviestage2.databinding.ActivityDetailBinding
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONArray
@@ -24,19 +24,14 @@ import org.json.JSONObject
 * TODO use data-binding
 */
 @AndroidEntryPoint
-class DetailActivity : AppCompatActivity(), ListAdapter.ListItemClickListener {
-    private var scrollView: ScrollView? = null
-    private var mTrailerAdapter: ListAdapter? = null
-    private var mReviewAdapter: ListAdapter? = null
-    private var mTrailerList: RecyclerView? = null
-    private var mReviewList: RecyclerView? = null
+class DetailActivity : AppCompatActivity() {
+    private lateinit var binding:ActivityDetailBinding
+    private val viewModel:DetailViewModel by viewModels()
+
+    /*
+     * TODO move to ViewModel
+     */
     private var _toast: Toast? = null
-    private var mListener: ListAdapter.ListItemClickListener = this
-    private var tvTitle: TextView? = null
-    private var ivPoster: ImageView? = null
-    private var tvPlot: TextView? = null
-    private var tvRating: TextView? = null
-    private var tvReleaseDate: TextView? = null
     private var mTrailerJsonArray: JSONArray? = null
     private var mReviewJsonArray: JSONArray? = null
     private var id: String? = null
@@ -47,21 +42,14 @@ class DetailActivity : AppCompatActivity(), ListAdapter.ListItemClickListener {
     //    private SharedPrefUtility sharedPrefUtility;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_detail)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_detail)
 
 //        sharedPrefUtility = new SharedPrefUtility(getApplicationContext());
-        scrollView = findViewById<View>(R.id.sv_scroller) as ScrollView
-        tvTitle = findViewById<View>(R.id.tv_original_title) as TextView
-        ivPoster = findViewById<View>(R.id.iv_poster_image) as ImageView
-        tvPlot = findViewById<View>(R.id.tv_plot) as TextView
-        tvRating = findViewById<View>(R.id.tv_rating) as TextView
-        tvReleaseDate = findViewById<View>(R.id.tv_release_date) as TextView
         val reviewManager = GridLayoutManager(this, 1)
-        mReviewList = findViewById<View>(R.id.rv_reviews) as RecyclerView
-        mReviewList!!.setLayoutManager(reviewManager)
+
+        binding.rvReviews.setLayoutManager(reviewManager)
         val trailerManager = GridLayoutManager(this, 1)
-        mTrailerList = findViewById<View>(R.id.rv_trailers) as RecyclerView
-        mTrailerList!!.setLayoutManager(trailerManager)
+        binding.rvTrailers.setLayoutManager(trailerManager)
         parseJSONContent()
         initializeElements()
         initializeAdvocateList()
@@ -100,18 +88,24 @@ class DetailActivity : AppCompatActivity(), ListAdapter.ListItemClickListener {
         var size = 0
         mTrailerJsonArray?.let {
             size = mTrailerJsonArray!!.length()
-            mTrailerAdapter = ListAdapter(size, mListener, it, true)
-            mTrailerList!!.setAdapter(mTrailerAdapter)
-            mTrailerList!!.layoutParams.height = size * 180
-            mTrailerList!!.setHasFixedSize(true)
+            val mTrailerAdapter = ListAdapter(size, onListItemClick, it, true)
+            binding.rvTrailers.apply {
+                setAdapter(mTrailerAdapter)
+                layoutParams.height = size * 180
+                setHasFixedSize(true)
+            }
             val header = findViewById<View>(R.id.tv_trailer_header) as TextView
             header.text = size.toString() + " " + getString(R.string.trailer_header)
         }
+
         mReviewJsonArray?.let {
             size = mReviewJsonArray!!.length()
-            mReviewAdapter = ListAdapter(size, mListener, it, false)
-            mReviewList!!.setAdapter(mReviewAdapter)
-            mReviewList!!.setHasFixedSize(true)
+            val mReviewAdapter = ListAdapter(size, onListItemClick, it, false)
+
+            binding.rvReviews.apply {
+                setAdapter(mReviewAdapter)
+                setHasFixedSize(true)
+            }
             val header = findViewById<View>(R.id.tv_review_header) as TextView
             header.text = size.toString() + " " + getString(R.string.review_header)
         }
@@ -121,13 +115,13 @@ class DetailActivity : AppCompatActivity(), ListAdapter.ListItemClickListener {
         json?.let {
             id = JSONhelper.parseValueByKey(it, MovieHelper.KEY_ID)
             val voteAverage = JSONhelper.parseValueByKey(it, MovieHelper.KEY_VOTE_AVERAGE)
-            tvRating!!.text = getString(R.string.vote_average) + voteAverage
+            binding.tvRating.text = getString(R.string.vote_average) + voteAverage
             val date = JSONhelper.parseValueByKey(it, MovieHelper.KEY_RELEASE_DATE)
-            tvReleaseDate!!.text = getString(R.string.date) + date
+            binding.tvReleaseDate.text = getString(R.string.date) + date
             val plot = JSONhelper.parseValueByKey(it, MovieHelper.KEY_PLOT)
-            tvPlot!!.text = plot
+            binding.tvPlot.text = plot
             title = JSONhelper.parseValueByKey(it, MovieHelper.KEY_ORIGINAL_TITLE)
-            tvTitle!!.text = getString(R.string.title) + title
+            binding.tvOriginalTitle.text = getString(R.string.title) + title
 
             // query db -- isFavorite if exists
             val columns = arrayOf("title")
@@ -152,7 +146,7 @@ class DetailActivity : AppCompatActivity(), ListAdapter.ListItemClickListener {
                 .load(url)
                 .placeholder(R.drawable.placeholder) // optional
                 .error(R.drawable.placeholder) // optional
-                .into(ivPoster)
+                .into(binding.ivPosterImage)
         }
     }
 
@@ -188,16 +182,16 @@ class DetailActivity : AppCompatActivity(), ListAdapter.ListItemClickListener {
 //                Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
     }
 
-    override fun onListItemClick(
+    private val onListItemClick:(
         clickItemIndex: Int,
         isVideo: Boolean
-    ) {
+    )->Unit =  {index, isVideo->
         if (_toast != null) _toast!!.cancel()
 
         // launch detail activity
         val jsonArray = if (isVideo) mTrailerJsonArray else mReviewJsonArray
         jsonArray?.let {
-            val json = JSONhelper.parseJsonFromArray(jsonArray, clickItemIndex)
+            val json = JSONhelper.parseJsonFromArray(jsonArray, index)
             json?.let {
                 // launch web
                 val url = if (isVideo) MovieHelper.BASE_YOUTUBE_URL + JSONhelper.parseValueByKey(
@@ -211,7 +205,7 @@ class DetailActivity : AppCompatActivity(), ListAdapter.ListItemClickListener {
         }
         // toast
         val toastmessage =
-            getString(R.string.item_no) + " " + clickItemIndex + " " + getString(R.string.clicked)
+            getString(R.string.item_no) + " " + index + " " + getString(R.string.clicked)
         _toast = Toast.makeText(this, toastmessage, Toast.LENGTH_LONG)
         _toast?.show()
     }
