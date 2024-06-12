@@ -33,7 +33,7 @@ import com.squareup.picasso.Picasso
  */
 class MovieGridAdapter(
     private val _movies: List<Movie>,
-    private val itemClick: (clickItemIndex: Int)->Unit,
+    private val itemClick: (movie:Movie)->Unit,
 ) : RecyclerView.Adapter<MovieGridAdapter.NumberViewHolder>() {
     private var _viewHolderCount = 0
     private var _context: Context? = null
@@ -75,7 +75,7 @@ class MovieGridAdapter(
         View.OnClickListener {
         var viewHolderName: TextView
         var viewHolderImage: ImageView
-
+        var movie:Movie?=null
         init {
             viewHolderName = itemView.findViewById<View>(R.id.txt_movie) as TextView
             viewHolderImage = itemView.findViewById<View>(R.id.iv_movie) as ImageView
@@ -89,23 +89,27 @@ class MovieGridAdapter(
          * @param position Position of the item in the list
          */
         fun bind(position: Int) {
-            val movie = _movies[position]
-            viewHolderName.text = movie.title
-            Log.d(TAG, "onCreateViewHolder: number of ViewHolders created: $_viewHolderCount")
+            movie = _movies[position]
+            movie?.let {
+                viewHolderName.text = it.title
+                Log.d(TAG, "onCreateViewHolder: number of ViewHolders created: $_viewHolderCount")
 
-            // http://image.tmdb.org/t/p/w780//udDclJoHjfjb8Ekgsd4FDteOkCU.jpg  example
-            Picasso.get()
-                .load(movie.posterThumbPath()) //.placeholder(R.drawable.placeholder)   // optional
-                //.error(R.drawable.placeholder)      // optional
-                .into(viewHolderImage, object : Callback {
-                    override fun onSuccess() {}
-                    override fun onError(e: Exception) {}
-                })
+                // http://image.tmdb.org/t/p/w780//udDclJoHjfjb8Ekgsd4FDteOkCU.jpg  example
+                Picasso.get()
+                    .load(it.posterThumbPath()) //.placeholder(R.drawable.placeholder)   // optional
+                    //.error(R.drawable.placeholder)      // optional
+                    .into(viewHolderImage, object : Callback {
+                        override fun onSuccess() {}
+                        override fun onError(e: Exception) {}
+                    })
+            }
         }
 
         override fun onClick(view: View) {
-            val clickPosition = getAdapterPosition()
-            itemClick(clickPosition)
+//            val clickPosition = getAdapterPosition()
+            movie?.let{
+                itemClick(it)
+            }
         }
     }
 

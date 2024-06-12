@@ -75,8 +75,7 @@ class MainActivity : AppCompatActivity() {
     private fun onTrailers(str: String?) {
         trailerString = str
         viewModel.selectedMovie?.let {
-            val id = it.id.toString()
-            viewModel.requestReviews(it, id)
+            viewModel.requestReviews(it)
         }
     }
 
@@ -144,18 +143,7 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    private val onListItemClick: (clickItemIndex: Int) -> Unit = { i ->
-        viewModel.apply {
-            selectedMovie = if (mSortMethod == MovieHelper.SORT_FAVORITE) {
-                favorites[i]
-            } else {
-                movies[i]
-            }
-
-            selectedMovie?.let {
-                val id = it.id.toString()
-                requestTrailers(it, id)
-            }
-        }
+    private val onListItemClick: (movie:Movie) -> Unit = { m ->
+        viewModel.select4Detail(m)
     }
 }

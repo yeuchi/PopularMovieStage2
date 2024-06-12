@@ -80,21 +80,22 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun requestTrailers(
-        selectedMovie: Movie,
-        id: String
-    ) {
+    fun select4Detail(movie: Movie) {
+        selectedMovie = movie
+            requestTrailers(movie)
+    }
+
+    private fun requestTrailers(movie: Movie) {
         viewModelScope.launch(IO) {
-            network.requestTrailers(selectedMovie, id)
+            network.requestTrailers(movie)
         }
     }
 
     fun requestReviews(
-        selectedMovie: Movie,
-        id: String
+        selectedMovie: Movie
     ) {
         viewModelScope.launch(IO) {
-            network.requestReviews(selectedMovie, id)
+            network.requestReviews(selectedMovie)
         }
     }
 
