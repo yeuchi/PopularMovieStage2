@@ -7,25 +7,16 @@ import javax.inject.Inject
 class MovieRepository @Inject constructor(
     private val movieDao: MovieDao
 ) {
-
-    private val _event = MutableSharedFlow<DaoEvent>()
-    val event: SharedFlow<DaoEvent> = _event
-    suspend fun retrieveAll() {
-        movieDao.getMovies().collect() {
-            _event.emit(DaoEvent.RetrieveAll(it))
-        }
+    suspend fun retrieveAll():List<Movie> {
+        return movieDao.getMovies()
     }
 
-    suspend fun retrieve(title:String) {
-        movieDao.getMovie(title).let {
-            _event.emit(DaoEvent.Retrieve(it))
-        }
+    suspend fun retrieve(title:String):Movie? {
+        return movieDao.getMovie(title)
     }
 
-    suspend fun favorites() {
-        movieDao.getFavorites().collect() {
-            _event.emit(DaoEvent.Favorites(it))
-        }
+    suspend fun favorites():List<Movie> {
+        return movieDao.getFavorites()
     }
 
     suspend fun insert(movie: Movie) {

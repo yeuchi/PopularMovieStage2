@@ -1,5 +1,6 @@
 package com.ctyeung.popularmoviestage2.views
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ctyeung.popularmoviestage2.data.network.MovieNetworkRepository
@@ -25,12 +26,14 @@ class MainViewModel @Inject constructor(
     private val _event = MutableSharedFlow<MainViewEvent>()
     val event: SharedFlow<MainViewEvent> = _event
 
+    /*
+     * TODO make these private
+     */
     var favorites = emptyList<Movie>()
     var movies = emptyList<Movie>()
     var selectedMovie: Movie? = null
 
     init {
-        listen4DB()
         listen4Network()
     }
 
@@ -46,31 +49,10 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun listen4DB() {
-        viewModelScope.launch(IO) {
-            db.event.collect() {
-                when (it) {
-                    is DaoEvent.RetrieveAll -> {
-                        movies = it.movies
-                    }
-
-                    is DaoEvent.Retrieve -> {
-                        /*
-                         * TODO handle request
-                         */
-                    }
-
-                    is DaoEvent.Favorites -> {
-                        favorites = it.movies
-                    }
-                }
-            }
-        }
-    }
-
     private suspend fun onMovies(list: List<Movie>) {
-        movies = list
-        _event.emit(MainViewEvent.Movies(list))
+        val all = db.retrieveAll()
+        movies = all
+        _event.emit(MainViewEvent.Movies(all))
     }
 
     private suspend fun onTrailers(str: String?) {
@@ -88,6 +70,7 @@ class MainViewModel @Inject constructor(
         when (sortMethod) {
             MovieHelper.SORT_FAVORITE -> {
                 viewModelScope.launch(IO) {
+                    favorites = db.favorites()
                     _event.emit(MainViewEvent.Favorites(favorites))
                 }
             }
