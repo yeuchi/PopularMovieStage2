@@ -40,7 +40,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(IO) {
             network.event.collect() {
                 when (it) {
-                    is NetworkEvent.Movies -> onMovies(it.list)
+                    is NetworkEvent.Movies -> onMovies()
                     is NetworkEvent.Trailers -> onTrailers(it.str)
                     is NetworkEvent.Reviews -> onReviews(it.str)
                 }
@@ -48,7 +48,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private suspend fun onMovies(list: List<Movie>) {
+    private suspend fun onMovies() {
         val all = db.retrieveAll()
         movies = all
         _event.emit(MainViewEvent.Movies(all))
@@ -65,12 +65,17 @@ class MainViewModel @Inject constructor(
     }
 
     /**
-     * load movie thumbs for main page
+     * Description: request data
+     * a. favorites -> query from db
+     * b. others -> REST call from service to retrieve all moives; then sort
      */
     fun request() {
         when (sortMethod) {
             MovieHelper.SORT_FAVORITE -> {
                 viewModelScope.launch(IO) {
+                    /*
+                     * TODO what if none available ?
+                     */
                     favorites = db.favorites()
                     _event.emit(MainViewEvent.Favorites(favorites))
                 }
@@ -81,12 +86,18 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun select4Detail(movie: Movie) {
+    /**
+     * Description: request detail on a movie
+     */
+    fun request4Detail(movie: Movie) {
         selectedMovie = movie
         requestTrailers(movie)
     }
 
-    fun selectMovieBundle(): String? {
+    /**
+     * Description: bundle string for DetailActivity
+     */
+    fun selectedMovieBundle(): String? {
         return if (selectedMovie != null && trailerString != null && reviewString != null) {
             val mergeString: String = selectedMovie!!.toJson() + "_sep_" +
                     trailerString + "_sep_" +
@@ -98,12 +109,18 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /*
+     * TODO move this to DetailViewModel
+     */
     private fun requestTrailers(movie: Movie) {
         viewModelScope.launch(IO) {
             network.requestTrailers(movie)
         }
     }
 
+    /*
+     * TODO move this to DetailViewModel
+     */
     fun requestReviews(
         selectedMovie: Movie
     ) {

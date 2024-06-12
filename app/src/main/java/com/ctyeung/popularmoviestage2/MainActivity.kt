@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun launchDetail() {
-        viewModel.selectMovieBundle()?.let {
+        viewModel.selectedMovieBundle()?.let {
             val intent = Intent(this@MainActivity, DetailActivity::class.java)
             intent.putExtra(Intent.EXTRA_TEXT, it)
             startActivity(intent)
@@ -92,12 +92,13 @@ class MainActivity : AppCompatActivity() {
         // set scroll event listener
         binding.rvMovie.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                /* scroll to a specific selection? */
             }
         })
     }
 
     private fun numberColumns(): Int {
-        val orientation: Int = getResources().getConfiguration().orientation
+        val orientation: Int = getResources().configuration.orientation
         return when (orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> 3
             Configuration.ORIENTATION_PORTRAIT -> 2
@@ -106,7 +107,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater: MenuInflater = getMenuInflater()
+        val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.menu_main, menu)
         return true
     }
@@ -134,6 +135,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val onListItemClick: (movie: Movie) -> Unit = { m ->
-        viewModel.select4Detail(m)
+        viewModel.request4Detail(m)
     }
 }
