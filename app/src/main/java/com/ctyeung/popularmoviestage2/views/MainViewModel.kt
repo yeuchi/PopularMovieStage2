@@ -1,11 +1,9 @@
 package com.ctyeung.popularmoviestage2.views
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ctyeung.popularmoviestage2.data.network.MovieNetworkRepository
 import com.ctyeung.popularmoviestage2.data.network.NetworkEvent
-import com.ctyeung.popularmoviestage2.data.room.DaoEvent
 import com.ctyeung.popularmoviestage2.data.room.Movie
 import com.ctyeung.popularmoviestage2.data.room.MovieRepository
 import com.ctyeung.popularmoviestage2.data.utilities.MovieHelper
@@ -29,9 +27,10 @@ class MainViewModel @Inject constructor(
     /*
      * TODO make these private
      */
-    var favorites = emptyList<Movie>()
-    var movies = emptyList<Movie>()
+    private var favorites = emptyList<Movie>()
+    private var movies = emptyList<Movie>()
     var selectedMovie: Movie? = null
+    var sortMethod = MovieHelper.SORT_POPULAR
 
     init {
         listen4Network()
@@ -66,7 +65,7 @@ class MainViewModel @Inject constructor(
     /**
      * load movie thumbs for main page
      */
-    fun request(sortMethod: String) {
+    fun request() {
         when (sortMethod) {
             MovieHelper.SORT_FAVORITE -> {
                 viewModelScope.launch(IO) {

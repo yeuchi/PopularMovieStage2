@@ -37,8 +37,6 @@ class MainActivity : AppCompatActivity() {
 
     private var trailerString: String? = null
     private var reviewString: String? = null
-    private var mSortMethod = MovieHelper.SORT_POPULAR
-    private var scrollY = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         initRecyclerList()
         listen4Events()
-        viewModel.request(MovieHelper.SORT_POPULAR)
+        viewModel.request()
     }
 
     private fun listen4Events() {
@@ -102,7 +100,6 @@ class MainActivity : AppCompatActivity() {
         // set scroll event listener
         binding.rvMovie.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                scrollY += dy
             }
         })
     }
@@ -124,26 +121,27 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val itemId = item.itemId
-        mSortMethod = when (itemId) {
-            R.id.sort_popular -> MovieHelper.SORT_POPULAR
-            R.id.sort_top_rated -> MovieHelper.SORT_TOP_RATED
-            R.id.sort_favorite -> MovieHelper.SORT_FAVORITE
+        viewModel.apply {
+            sortMethod = when (itemId) {
+                R.id.sort_popular -> MovieHelper.SORT_POPULAR
+                R.id.sort_top_rated -> MovieHelper.SORT_TOP_RATED
+                R.id.sort_favorite -> MovieHelper.SORT_FAVORITE
 
-            /* no such thing */
-            else ->
-                return super.onOptionsItemSelected(item)
+                /* no such thing */
+                else ->
+                    return super.onOptionsItemSelected(item)
+            }
+
+            /*
+             * TODO remove when sort methdos implemented
+             */
+            sortMethod = MovieHelper.SORT_POPULAR
+            request()
         }
-
-        /*
-         * TODO remove when sort methdos implemented
-         */
-        mSortMethod = MovieHelper.SORT_POPULAR
-        scrollY = 0
-        viewModel.request(mSortMethod)
         return true
     }
 
-    private val onListItemClick: (movie:Movie) -> Unit = { m ->
+    private val onListItemClick: (movie: Movie) -> Unit = { m ->
         viewModel.select4Detail(m)
     }
 }
