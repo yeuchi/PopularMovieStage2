@@ -53,8 +53,6 @@ class MainActivity : AppCompatActivity() {
             when (it) {
                 is MainViewEvent.Favorites -> onMovies(it.list)
                 is MainViewEvent.Movies -> onMovies(it.list)
-                is MainViewEvent.Trailers -> onTrailers()
-                is MainViewEvent.Reviews -> onReviews()
             }
         }
     }
@@ -64,24 +62,6 @@ class MainActivity : AppCompatActivity() {
         binding.rvMovie.apply {
             setAdapter(mAdapter)
             setHasFixedSize(true)
-        }
-    }
-
-    private fun onTrailers() {
-        viewModel.selectedMovie?.let {
-            viewModel.requestReviews(it)
-        }
-    }
-
-    private fun onReviews() {
-        launchDetail()
-    }
-
-    private fun launchDetail() {
-        viewModel.selectedMovieBundle()?.let {
-            val intent = Intent(this@MainActivity, DetailActivity::class.java)
-            intent.putExtra(Intent.EXTRA_TEXT, it)
-            startActivity(intent)
         }
     }
 
@@ -134,7 +114,9 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    private val onListItemClick: (movie: Movie) -> Unit = { m ->
-        viewModel.request4Detail(m)
+    private val onListItemClick: (movie: Movie) -> Unit = { movie ->
+        val intent = Intent(this@MainActivity, DetailActivity::class.java)
+        intent.putExtra(Intent.EXTRA_TEXT, movie.toJson())
+        startActivity(intent)
     }
 }

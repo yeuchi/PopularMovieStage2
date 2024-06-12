@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.GridLayoutManager
 import com.ctyeung.popularmoviestage2.R
 import com.ctyeung.popularmoviestage2.data.utilities.JSONhelper
@@ -23,25 +24,49 @@ class DetailActivity : AppCompatActivity() {
     private val viewModel: DetailViewModel by viewModels()
 
     private var _toast: Toast? = null
-    private var mTrailerJsonArray: JSONArray? = null
-    private var mReviewJsonArray: JSONArray? = null
 
 
-    //    private SharedPrefUtility sharedPrefUtility;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_detail)
 
-//        sharedPrefUtility = new SharedPrefUtility(getApplicationContext());
         val reviewManager = GridLayoutManager(this, 1)
 
         binding.rvReviews.setLayoutManager(reviewManager)
         val trailerManager = GridLayoutManager(this, 1)
         binding.rvTrailers.setLayoutManager(trailerManager)
-        parseJSONContent()
-        initializeElements()
-        initializeAdvocateList()
-        setScrollPosition()
+        if(parseJSONContent()) {
+            initializeElements()
+            setScrollPosition()
+        }
+        else {
+            /* back press */
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        listen4Events()
+        viewModel.requestTrailers()
+    }
+
+    private fun listen4Events() {
+        viewModel.event.asLiveData().observeForever {
+            when (it) {
+                is DetailViewEvent.Trailers -> onTrailer()
+                is DetailViewEvent.Reviews -> onReview()
+                else -> {}
+            }
+        }
+    }
+
+    private fun onTrailer() {
+        initializeTrailer()
+        viewModel.requestReviews()
+    }
+
+    private fun onReview() {
+        initializeReview()
     }
 
     private fun setScrollPosition() {
@@ -64,42 +89,48 @@ class DetailActivity : AppCompatActivity() {
 //        });
     }
 
-    private fun parseJSONContent() {
-        val str = this.intent.getStringExtra(Intent.EXTRA_TEXT)
-        val list = str!!.split("_sep_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        viewModel.parseJson(list[0])
-        mTrailerJsonArray = JSONhelper.getJsonArray(list[1], "results")
-        mReviewJsonArray = JSONhelper.getJsonArray(list[2], "results")
+    private fun parseJSONContent():Boolean {
+        this.intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
+            return viewModel.parseJson(it)
+        }
+        return false
     }
 
-    private fun initializeAdvocateList() {
+    private fun initializeTrailer() {
         var size = 0
-        mTrailerJsonArray?.let {
-            size = mTrailerJsonArray!!.length()
-            val mTrailerAdapter = ListAdapter(size, onListItemClick, it, true)
-            binding.rvTrailers.apply {
-                setAdapter(mTrailerAdapter)
-                layoutParams.height = size * 180
-                setHasFixedSize(true)
+        viewModel.apply {
+            mTrailerJsonArray?.let {
+                size = it.length()
+                val mTrailerAdapter = ListAdapter(size, onListItemClick, it, true)
+                binding.rvTrailers.apply {
+                    setAdapter(mTrailerAdapter)
+                    layoutParams.height = size * 180
+                    setHasFixedSize(true)
+                }
+                binding.tvTrailerHeader.text =
+                    size.toString() + " " + getString(R.string.trailer_header)
             }
-            binding.tvTrailerHeader.text =
-                size.toString() + " " + getString(R.string.trailer_header)
         }
+    }
 
-        mReviewJsonArray?.let {
-            size = mReviewJsonArray!!.length()
-            val mReviewAdapter = ListAdapter(size, onListItemClick, it, false)
+    private fun initializeReview() {
+        var size = 0
+        viewModel.apply {
+            mReviewJsonArray?.let {
+                size = mReviewJsonArray!!.length()
+                val mReviewAdapter = ListAdapter(size, onListItemClick, it, false)
 
-            binding.rvReviews.apply {
-                setAdapter(mReviewAdapter)
-                setHasFixedSize(true)
+                binding.rvReviews.apply {
+                    setAdapter(mReviewAdapter)
+                    setHasFixedSize(true)
+                }
+                binding.tvReviewHeader.text =
+                    size.toString() + " " + getString(R.string.review_header)
             }
-            binding.tvReviewHeader.text = size.toString() + " " + getString(R.string.review_header)
         }
     }
 
     private fun initializeElements() {
-
         viewModel.apply {
             binding.tvRating.text = getString(R.string.vote_average) + voteAverage
             binding.tvReleaseDate.text = getString(R.string.date) + releaseDate
@@ -137,25 +168,28 @@ class DetailActivity : AppCompatActivity() {
     ) -> Unit = { index, isVideo ->
         if (_toast != null) _toast!!.cancel()
 
-        val jsonArray = if (isVideo) mTrailerJsonArray else mReviewJsonArray
-        jsonArray?.let {
-            val json = JSONhelper.parseJsonFromArray(jsonArray, index)
-            json?.let {
-                // launch web
-                val url = if (isVideo) MovieHelper.BASE_YOUTUBE_URL + JSONhelper.parseValueByKey(
-                    json,
-                    MovieHelper.KEY_TRAILER
-                ) else JSONhelper.parseValueByKey(json, MovieHelper.KEY_REVIEW_URL)
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.setData(Uri.parse(url))
-                startActivity(intent)
+        viewModel.apply {
+            val jsonArray = if (isVideo) mTrailerJsonArray else mReviewJsonArray
+            jsonArray?.let {
+                val json = JSONhelper.parseJsonFromArray(jsonArray, index)
+                json?.let {
+                    // launch web
+                    val url =
+                        if (isVideo) MovieHelper.BASE_YOUTUBE_URL + JSONhelper.parseValueByKey(
+                            json,
+                            MovieHelper.KEY_TRAILER
+                        ) else JSONhelper.parseValueByKey(json, MovieHelper.KEY_REVIEW_URL)
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.setData(Uri.parse(url))
+                    startActivity(intent)
+                }
             }
+            // toast
+//            val toastmessage =
+//                getString(R.string.item_no) + " " + index + " " + getString(R.string.clicked)
+//            _toast = Toast.makeText(this, toastmessage, Toast.LENGTH_LONG)
+//            _toast?.show()
         }
-        // toast
-        val toastmessage =
-            getString(R.string.item_no) + " " + index + " " + getString(R.string.clicked)
-        _toast = Toast.makeText(this, toastmessage, Toast.LENGTH_LONG)
-        _toast?.show()
     }
 
     override fun onDestroy() {

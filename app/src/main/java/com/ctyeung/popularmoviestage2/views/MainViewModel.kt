@@ -17,8 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    val db: MovieRepository,
-    val network: MovieNetworkRepository
+    private val db: MovieRepository,
+    private val network: MovieNetworkRepository
 ) : ViewModel() {
 
     private val _event = MutableSharedFlow<MainViewEvent>()
@@ -26,11 +26,7 @@ class MainViewModel @Inject constructor(
 
     private var favorites = emptyList<Movie>()
     private var movies = emptyList<Movie>()
-    var selectedMovie: Movie? = null
     var sortMethod = MovieHelper.SORT_POPULAR
-
-    private var trailerString: String? = null
-    private var reviewString: String? = null
 
     init {
         listen4Network()
@@ -41,8 +37,9 @@ class MainViewModel @Inject constructor(
             network.event.collect() {
                 when (it) {
                     is NetworkEvent.Movies -> onMovies()
-                    is NetworkEvent.Trailers -> onTrailers(it.str)
-                    is NetworkEvent.Reviews -> onReviews(it.str)
+                    is NetworkEvent.Trailers -> {}
+                    is NetworkEvent.Reviews -> {}
+
                 }
             }
         }
@@ -54,15 +51,7 @@ class MainViewModel @Inject constructor(
         _event.emit(MainViewEvent.Movies(all))
     }
 
-    private suspend fun onTrailers(str: String?) {
-        trailerString = str
-        _event.emit(MainViewEvent.Trailers(str))
-    }
 
-    private suspend fun onReviews(str: String?) {
-        reviewString = str
-        _event.emit(MainViewEvent.Reviews(str))
-    }
 
     /**
      * Description: request data
@@ -86,49 +75,6 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Description: request detail on a movie
-     */
-    fun request4Detail(movie: Movie) {
-        selectedMovie = movie
-        requestTrailers(movie)
-    }
-
-    /**
-     * Description: bundle string for DetailActivity
-     */
-    fun selectedMovieBundle(): String? {
-        return if (selectedMovie != null && trailerString != null && reviewString != null) {
-            val mergeString: String = selectedMovie!!.toJson() + "_sep_" +
-                    trailerString + "_sep_" +
-                    reviewString
-
-            mergeString
-        } else {
-            null
-        }
-    }
-
-    /*
-     * TODO move this to DetailViewModel
-     */
-    private fun requestTrailers(movie: Movie) {
-        viewModelScope.launch(IO) {
-            network.requestTrailers(movie)
-        }
-    }
-
-    /*
-     * TODO move this to DetailViewModel
-     */
-    fun requestReviews(
-        selectedMovie: Movie
-    ) {
-        viewModelScope.launch(IO) {
-            network.requestReviews(selectedMovie)
-        }
-    }
-
     private fun loadFromNetwork(sortMethod: String) {
         viewModelScope.launch(IO) {
             network.requestMovies(sortMethod)
@@ -139,6 +85,4 @@ class MainViewModel @Inject constructor(
 sealed class MainViewEvent() {
     data class Favorites(val list: List<Movie>) : MainViewEvent()
     data class Movies(val list: List<Movie>) : MainViewEvent()
-    data class Trailers(val str: String?) : MainViewEvent()
-    data class Reviews(val str: String?) : MainViewEvent()
 }
