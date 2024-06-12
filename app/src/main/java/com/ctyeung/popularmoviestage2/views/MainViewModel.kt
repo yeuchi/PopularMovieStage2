@@ -24,13 +24,13 @@ class MainViewModel @Inject constructor(
     private val _event = MutableSharedFlow<MainViewEvent>()
     val event: SharedFlow<MainViewEvent> = _event
 
-    /*
-     * TODO make these private
-     */
     private var favorites = emptyList<Movie>()
     private var movies = emptyList<Movie>()
     var selectedMovie: Movie? = null
     var sortMethod = MovieHelper.SORT_POPULAR
+
+    private var trailerString: String? = null
+    private var reviewString: String? = null
 
     init {
         listen4Network()
@@ -55,10 +55,12 @@ class MainViewModel @Inject constructor(
     }
 
     private suspend fun onTrailers(str: String?) {
+        trailerString = str
         _event.emit(MainViewEvent.Trailers(str))
     }
 
     private suspend fun onReviews(str: String?) {
+        reviewString = str
         _event.emit(MainViewEvent.Reviews(str))
     }
 
@@ -81,7 +83,19 @@ class MainViewModel @Inject constructor(
 
     fun select4Detail(movie: Movie) {
         selectedMovie = movie
-            requestTrailers(movie)
+        requestTrailers(movie)
+    }
+
+    fun selectMovieBundle(): String? {
+        return if (selectedMovie != null && trailerString != null && reviewString != null) {
+            val mergeString: String = selectedMovie!!.toJson() + "_sep_" +
+                    trailerString + "_sep_" +
+                    reviewString
+
+            mergeString
+        } else {
+            null
+        }
     }
 
     private fun requestTrailers(movie: Movie) {

@@ -35,9 +35,6 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
     private var mAdapter: MovieGridAdapter? = null
 
-    private var trailerString: String? = null
-    private var reviewString: String? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -56,8 +53,8 @@ class MainActivity : AppCompatActivity() {
             when (it) {
                 is MainViewEvent.Favorites -> onMovies(it.list)
                 is MainViewEvent.Movies -> onMovies(it.list)
-                is MainViewEvent.Trailers -> onTrailers(it.str)
-                is MainViewEvent.Reviews -> onReviews(it.str)
+                is MainViewEvent.Trailers -> onTrailers()
+                is MainViewEvent.Reviews -> onReviews()
             }
         }
     }
@@ -70,25 +67,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun onTrailers(str: String?) {
-        trailerString = str
+    private fun onTrailers() {
         viewModel.selectedMovie?.let {
             viewModel.requestReviews(it)
         }
     }
 
-    private fun onReviews(str: String?) {
-        reviewString = str
+    private fun onReviews() {
         launchDetail()
     }
 
     private fun launchDetail() {
-        if (viewModel.selectedMovie != null && trailerString != null && reviewString != null) {
-            val intent = Intent(this, DetailActivity::class.java)
-            val mergeString: String = viewModel.selectedMovie!!.toJson() + "_sep_" +
-                    trailerString + "_sep_" +
-                    reviewString
-            intent.putExtra(Intent.EXTRA_TEXT, mergeString)
+        viewModel.selectMovieBundle()?.let {
+            val intent = Intent(this@MainActivity, DetailActivity::class.java)
+            intent.putExtra(Intent.EXTRA_TEXT, it)
             startActivity(intent)
         }
     }
