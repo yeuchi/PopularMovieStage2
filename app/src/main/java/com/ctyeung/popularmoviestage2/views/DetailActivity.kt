@@ -3,6 +3,7 @@ package com.ctyeung.popularmoviestage2.views
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.GridLayoutManager
+import com.ctyeung.popularmoviestage2.MainActivity
 import com.ctyeung.popularmoviestage2.R
 import com.ctyeung.popularmoviestage2.data.utilities.JSONhelper
 import com.ctyeung.popularmoviestage2.data.utilities.MovieHelper
@@ -27,17 +29,22 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_detail)
 
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+        }
+
         val reviewManager = GridLayoutManager(this, 1)
         binding.rvReviews.setLayoutManager(reviewManager)
 
         val trailerManager = GridLayoutManager(this, 1)
         binding.rvTrailers.setLayoutManager(trailerManager)
 
-        if(parseJSONContent()) {
+        if (parseJSONContent()) {
             initializeElements()
             setScrollPosition()
-        }
-        else {
+        } else {
             /* back press */
         }
     }
@@ -56,6 +63,18 @@ class DetailActivity : AppCompatActivity() {
                 else -> {}
             }
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val itemId = item.itemId
+        when (itemId) {
+            android.R.id.home -> {
+                startActivity(Intent(this, MainActivity::class.java))
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
+        return true
     }
 
     private fun onTrailer() {
@@ -87,7 +106,7 @@ class DetailActivity : AppCompatActivity() {
 //        });
     }
 
-    private fun parseJSONContent():Boolean {
+    private fun parseJSONContent(): Boolean {
         this.intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
             return viewModel.parseJson(it)
         }
@@ -134,7 +153,7 @@ class DetailActivity : AppCompatActivity() {
                 it.tvRating.text = getString(R.string.vote_average) + voteAverage
                 it.tvReleaseDate.text = getString(R.string.date) + releaseDate
                 it.tvPlot.text = plot
-                it.tvOriginalTitle.text = getString(R.string.title) + title
+                it.toolbar.title = getString(R.string.title) + title
 
                 // label button pending on query result
                 it.btnFavorite.setOnClickListener {
@@ -153,7 +172,7 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun setBtnFavoriteText(isFavorite:Boolean) {
+    private fun setBtnFavoriteText(isFavorite: Boolean) {
         val stringIndex =
             if (isFavorite) R.string.remove_favorite else R.string.mark_as_favorite
         binding.btnFavorite.text = getString(stringIndex)
