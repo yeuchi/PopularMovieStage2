@@ -16,25 +16,23 @@ import com.ctyeung.popularmoviestage2.data.utilities.MovieHelper
 import com.ctyeung.popularmoviestage2.databinding.ActivityDetailBinding
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
-import org.json.JSONArray
 
 @AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
     private val viewModel: DetailViewModel by viewModels()
-
     private var _toast: Toast? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_detail)
 
         val reviewManager = GridLayoutManager(this, 1)
-
         binding.rvReviews.setLayoutManager(reviewManager)
+
         val trailerManager = GridLayoutManager(this, 1)
         binding.rvTrailers.setLayoutManager(trailerManager)
+
         if(parseJSONContent()) {
             initializeElements()
             setScrollPosition()
@@ -101,7 +99,7 @@ class DetailActivity : AppCompatActivity() {
         viewModel.apply {
             mTrailerJsonArray?.let {
                 size = it.length()
-                val mTrailerAdapter = ListAdapter(size, onListItemClick, it, true)
+                val mTrailerAdapter = ListAdapter(size, onLaunchTrailer, it, true)
                 binding.rvTrailers.apply {
                     setAdapter(mTrailerAdapter)
                     layoutParams.height = size * 180
@@ -118,7 +116,7 @@ class DetailActivity : AppCompatActivity() {
         viewModel.apply {
             mReviewJsonArray?.let {
                 size = mReviewJsonArray!!.length()
-                val mReviewAdapter = ListAdapter(size, onListItemClick, it, false)
+                val mReviewAdapter = ListAdapter(size, onLaunchTrailer, it, false)
 
                 binding.rvReviews.apply {
                     setAdapter(mReviewAdapter)
@@ -132,37 +130,39 @@ class DetailActivity : AppCompatActivity() {
 
     private fun initializeElements() {
         viewModel.apply {
-            binding.tvRating.text = getString(R.string.vote_average) + voteAverage
-            binding.tvReleaseDate.text = getString(R.string.date) + releaseDate
-            binding.tvPlot.text = plot
-            binding.tvOriginalTitle.text = getString(R.string.title) + title
+            binding.let {
+                it.tvRating.text = getString(R.string.vote_average) + voteAverage
+                it.tvReleaseDate.text = getString(R.string.date) + releaseDate
+                it.tvPlot.text = plot
+                it.tvOriginalTitle.text = getString(R.string.title) + title
 
-            // label button pending on query result
-            binding.btnFavorite.setOnClickListener(buttonListener)
-            setBtnFavoriteText()
-            val url = movie?.posterDetailPath()
-            Picasso.get() //.load("http://i.imgur.com/DvpvklR.png") example
-                .load(url)
-                .placeholder(R.drawable.placeholder) // optional
-                .error(R.drawable.placeholder) // optional
-                .into(binding.ivPosterImage)
+                // label button pending on query result
+                it.btnFavorite.setOnClickListener {
+                    setBtnFavoriteText(!isFavorite)
+                    viewModel.selectFavorite()
+                }
+
+                setBtnFavoriteText(isFavorite)
+                val url = movie?.posterDetailPath()
+                Picasso.get() //.load("http://i.imgur.com/DvpvklR.png") example
+                    .load(url)
+                    .placeholder(R.drawable.placeholder) // optional
+                    .error(R.drawable.placeholder) // optional
+                    .into(it.ivPosterImage)
+            }
         }
     }
 
-    private fun setBtnFavoriteText() {
+    private fun setBtnFavoriteText(isFavorite:Boolean) {
         val stringIndex =
-            if (viewModel.isFavorite) R.string.remove_favorite else R.string.mark_as_favorite
+            if (isFavorite) R.string.remove_favorite else R.string.mark_as_favorite
         binding.btnFavorite.text = getString(stringIndex)
     }
 
-    private val buttonListener = View.OnClickListener {
-        viewModel.selectFavorite()
-        setBtnFavoriteText();
-//            if(uri != null)
-//                Toast.makeText(getBaseContext(), uri.toString(), Toast.LENGTH_LONG).show();
-    }
-
-    private val onListItemClick: (
+    /**
+     * Description: trailer
+     */
+    private val onLaunchTrailer: (
         clickItemIndex: Int,
         isVideo: Boolean
     ) -> Unit = { index, isVideo ->
