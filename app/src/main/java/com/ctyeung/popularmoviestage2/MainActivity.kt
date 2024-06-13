@@ -26,8 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
  *  a. progress UI
  *  b. error handling (db, network, etc)
  *  c. ScrollY ?
- *  d. Trailer/Review data classes ?
- *  e. msg when no favorites has been selected - blank list
+ *  d. msg when no favorites has been selected - blank list
  */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

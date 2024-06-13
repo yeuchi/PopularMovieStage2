@@ -19,6 +19,13 @@ import com.ctyeung.popularmoviestage2.databinding.ActivityDetailBinding
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 
+/*
+ * TODO
+ *  a. progress UI
+ *  b. error handling (db, network, etc)
+ *  c. ScrollY ?
+ *  d. Trailer/Review data classes ?
+ */
 @AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
@@ -43,7 +50,6 @@ class DetailActivity : AppCompatActivity() {
 
         if (parseJSONContent()) {
             initializeElements()
-            setScrollPosition()
         } else {
             /* back press */
         }
@@ -84,26 +90,6 @@ class DetailActivity : AppCompatActivity() {
 
     private fun onReview() {
         initializeReview()
-    }
-
-    private fun setScrollPosition() {
-//        scrollView.post(new Runnable()
-//        {
-//            public void run()
-//            {
-//                int pos = sharedPrefUtility.getScrollPos(sharedPrefUtility.DETAIL_SCROLL);
-//                int pos = 0;
-//                if(pos > 0)
-//                {
-//                    scrollView.smoothScrollTo(0,pos);
-//                }
-//                else
-//                {
-//                    //default at top ... unless we have a previous position
-//                    scrollView.fullScroll(View.FOCUS_UP);
-//                }
-//            }
-//        });
     }
 
     private fun parseJSONContent(): Boolean {
@@ -209,11 +195,5 @@ class DetailActivity : AppCompatActivity() {
 //            _toast = Toast.makeText(this, toastmessage, Toast.LENGTH_LONG)
 //            _toast?.show()
         }
-    }
-
-    override fun onDestroy() {
-//        int pos = scrollView.getScrollY();
-//        sharedPrefUtility.setScroll(sharedPrefUtility.DETAIL_SCROLL, pos);
-        super.onDestroy()
     }
 }
