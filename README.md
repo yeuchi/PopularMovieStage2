@@ -6,6 +6,10 @@
 - callback to event driven
 - coroutine
 - db cursor to room
+- MVP to MVVM (HILT/viewModel/Repository)
+
+ToDos
+- retrofit or update to Executor
 
 ### Android Studio
 Iguana 2023.2.1 Patch 2 April 3, 2024\
