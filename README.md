@@ -1,9 +1,7 @@
 
 # Udacity project: PopularMovies - Stage 2 <img src="https://user-images.githubusercontent.com/1282659/68507718-2fb17200-0232-11ea-84c5-c22890309e46.png" width="40"> 
 
-### Work-in-progress
-Being updated to latest Kotlin/Jetpack: june 7, 2024
-
+### Updated Kotlin/Jetpack/coroutine/room with xml layout: june 15, 2024
 
 ### Android Studio
 Iguana 2023.2.1 Patch 2 April 3, 2024\
