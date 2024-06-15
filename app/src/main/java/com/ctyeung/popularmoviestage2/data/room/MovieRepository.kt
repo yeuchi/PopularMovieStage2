@@ -26,6 +26,10 @@ class MovieRepository @Inject constructor(
     suspend fun dropTable() {
         movieDao.deleteAll()
     }
+
+    suspend fun deleteNonFavorites() {
+        movieDao.deleteNonFavorites()
+    }
 }
 
 sealed class DaoEvent() {

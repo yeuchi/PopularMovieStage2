@@ -57,23 +57,6 @@ class GithubQueryTask(
 
     private suspend fun handleReviews(str: String?) {
         _event.emit(QueryEvent.Reviews(str))
-
-//        val typeVideo = MovieHelper.isVideo(str)
-//        if (null != selectedMovie) {
-//            if (typeVideo) {
-//                trailerString = str
-//            } else {
-//                reviewString = str
-//            }
-//
-//            // launch detail page when we have all content (selection, trailers, reviews json)
-//            if (null != trailerString &&
-//                null != reviewString
-//            ) launchDetailActivity(selectedMovie)
-//        } else {
-//            // display info explaining 'no selection, trailer or review' available
-//            tvNetworkErrorDisplay!!.visibility = View.VISIBLE
-//        }
     }
 
     private suspend fun handleMovieData(str: String?) {

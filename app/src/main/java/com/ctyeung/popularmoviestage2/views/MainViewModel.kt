@@ -52,7 +52,6 @@ class MainViewModel @Inject constructor(
     }
 
 
-
     /**
      * Description: request data
      * a. favorites -> query from db
@@ -62,9 +61,6 @@ class MainViewModel @Inject constructor(
         when (sortMethod) {
             MovieHelper.SORT_FAVORITE -> {
                 viewModelScope.launch(IO) {
-                    /*
-                     * TODO what if none available ?
-                     */
                     favorites = db.favorites()
                     _event.emit(MainViewEvent.Favorites(favorites))
                 }

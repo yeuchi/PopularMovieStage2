@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -44,14 +45,26 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         initRecyclerList()
         listen4Events()
-        viewModel.request()
+        viewModel.apply {
+            request()
+        }
     }
 
     private fun listen4Events() {
-        viewModel.event.asLiveData().observeForever {
-            when (it) {
-                is MainViewEvent.Favorites -> onMovies(it.list)
-                is MainViewEvent.Movies -> onMovies(it.list)
+        viewModel.apply {
+            event.asLiveData().observeForever {
+                when (it) {
+                    is MainViewEvent.Favorites -> {
+                        if(it.list.isEmpty()){
+                            Toast.makeText(this@MainActivity, "No Favorites available", Toast.LENGTH_LONG).show()
+                            request()
+                        }
+                        else {
+                            onMovies(it.list)
+                        }
+                    }
+                    is MainViewEvent.Movies -> onMovies(it.list)
+                }
             }
         }
     }
@@ -103,11 +116,6 @@ class MainActivity : AppCompatActivity() {
                 else ->
                     return super.onOptionsItemSelected(item)
             }
-
-            /*
-             * TODO remove when sort methdos implemented
-             */
-            sortMethod = MovieHelper.SORT_POPULAR
             request()
         }
         return true

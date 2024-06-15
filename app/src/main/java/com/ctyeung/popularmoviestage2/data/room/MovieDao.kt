@@ -24,6 +24,9 @@ interface MovieDao {
     @Query("DELETE FROM movie_table")
      fun deleteAll()
 
+    @Query("DELETE FROM movie_table where isFavorite = false")
+    fun deleteNonFavorites()
+
     @Query("DELETE FROM movie_table WHERE originalTitle = :title")
      fun deleteBy(title: String)
 }

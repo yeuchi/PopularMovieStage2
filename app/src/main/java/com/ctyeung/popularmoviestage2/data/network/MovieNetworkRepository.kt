@@ -54,9 +54,17 @@ class MovieNetworkRepository @Inject constructor(
     }
 
     private suspend fun onMovies(movies: List<Movie>) {
-        db.dropTable()
-        movies.forEach {
-            db.insert(it)
+        /* don't delete nor replaced favorites */
+        db.deleteNonFavorites()
+        movies.forEach { m ->
+            val hasIt = db.retrieve(m.title)
+            hasIt?.let {
+                if (!it.isFavorite) {
+                    db.insert(it)
+                }
+            } ?: run {
+                db.insert(m)
+            }
         }
         _event.emit(NetworkEvent.Movies(movies))
     }
