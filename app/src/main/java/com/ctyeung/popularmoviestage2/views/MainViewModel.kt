@@ -71,6 +71,9 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Request network {popular or top_rated}
+     */
     private fun loadFromNetwork(sortMethod: String) {
         viewModelScope.launch(IO) {
             network.requestMovies(sortMethod)

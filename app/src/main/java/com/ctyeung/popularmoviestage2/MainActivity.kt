@@ -27,7 +27,6 @@ import dagger.hilt.android.AndroidEntryPoint
  *  a. progress UI
  *  b. error handling (db, network, etc)
  *  c. ScrollY ?
- *  d. msg when no favorites has been selected - blank list
  */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -55,20 +54,39 @@ class MainActivity : AppCompatActivity() {
             event.asLiveData().observeForever {
                 when (it) {
                     is MainViewEvent.Favorites -> {
-                        if(it.list.isEmpty()){
-                            Toast.makeText(this@MainActivity, "No Favorites available", Toast.LENGTH_LONG).show()
-                            request()
-                        }
-                        else {
+                        if (it.list.isEmpty()) {
+                            defaultInsteadOfFavorite()
+                        } else {
                             onMovies(it.list)
                         }
                     }
+
                     is MainViewEvent.Movies -> onMovies(it.list)
                 }
             }
         }
     }
 
+    /**
+     * No Favorites available
+     * a. display error msg
+     * b. request default: popular
+     */
+    private fun defaultInsteadOfFavorite() {
+        Toast.makeText(
+            this@MainActivity,
+            "No Favorites available",
+            Toast.LENGTH_LONG
+        ).show()
+        viewModel.apply {
+            sortMethod = MovieHelper.SORT_POPULAR
+            request()
+        }
+    }
+
+    /**
+     * handle response movie list
+     */
     private fun onMovies(list: List<Movie>) {
         mAdapter = MovieGridAdapter(list, onListItemClick)
         binding.rvMovie.apply {
