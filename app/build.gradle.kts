@@ -1,6 +1,6 @@
 plugins {
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
     id("dagger.hilt.android.plugin")
     id("kotlin-kapt")
 }
@@ -11,10 +11,10 @@ android {
 
     defaultConfig {
         applicationId = "com.ctyeung.popularmoviestage2"
-        minSdk = 29
+        minSdk = 27
         targetSdk = 34
-        versionCode = 5
-        versionName = "5.0"
+        versionCode = 6
+        versionName = "6.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -29,13 +29,12 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
-
     buildFeatures {
         viewBinding = true
         dataBinding = true
@@ -67,12 +66,12 @@ dependencies {
     kapt("androidx.room:room-compiler:2.4.3")
     androidTestImplementation("androidx.room:room-testing:2.4.3")
     /* ends room */
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
