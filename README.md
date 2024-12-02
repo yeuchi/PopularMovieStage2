@@ -12,8 +12,8 @@ ToDos
 - retrofit or update to Executor
 
 ### Android Studio
-Iguana 2023.2.1 Patch 2 April 3, 2024\
-<img width="500" src="https://github.com/yeuchi/LinearRegression/assets/1282659/4faf30c4-4425-4201-846b-b5bd32c9fc42"/>
+Android Studio Ladybug | 2024.2.1 Patch 2
+Build #AI-242.23339.11.2421.12550806, built on October 24, 2024
 
 ### Test Device
 Google Pixel6a 
