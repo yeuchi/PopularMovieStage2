@@ -6,11 +6,9 @@
         android:layout_height="wrap_content">
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:id="@+id/iv_movie"
-        android:scaleType="fitXY"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+        android:scaleType="centerInside"
         android:background="@drawable/placeholder">
     </ImageView>
 

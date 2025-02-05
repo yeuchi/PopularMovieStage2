@@ -13,8 +13,8 @@ android {
         applicationId = "com.ctyeung.popularmoviestage2"
         minSdk = 27
         targetSdk = 34
-        versionCode = 6
-        versionName = "6.0"
+        versionCode = 7
+        versionName = "7.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
