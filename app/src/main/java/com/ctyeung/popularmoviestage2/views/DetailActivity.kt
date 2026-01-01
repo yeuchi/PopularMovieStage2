@@ -141,13 +141,6 @@ class DetailActivity : AppCompatActivity() {
                 it.tvPlot.text = plot
                 it.toolbar.title = getString(R.string.title) + title
 
-                // label button pending on query result
-                it.btnFavorite.setOnClickListener {
-                    setBtnFavoriteText(!isFavorite)
-                    viewModel.selectFavorite()
-                }
-
-                setBtnFavoriteText(isFavorite)
                 val url = movie?.posterDetailPath()
                 Picasso.get() //.load("http://i.imgur.com/DvpvklR.png") example
                     .load(url)
@@ -156,12 +149,6 @@ class DetailActivity : AppCompatActivity() {
                     .into(it.ivPosterImage)
             }
         }
-    }
-
-    private fun setBtnFavoriteText(isFavorite: Boolean) {
-        val stringIndex =
-            if (isFavorite) R.string.remove_favorite else R.string.mark_as_favorite
-        binding.btnFavorite.text = getString(stringIndex)
     }
 
     /**

@@ -128,7 +128,6 @@ class MainActivity : AppCompatActivity() {
             sortMethod = when (itemId) {
                 R.id.sort_popular -> MovieHelper.SORT_POPULAR
                 R.id.sort_top_rated -> MovieHelper.SORT_TOP_RATED
-                R.id.sort_favorite -> MovieHelper.SORT_FAVORITE
 
                 /* no such thing */
                 else ->

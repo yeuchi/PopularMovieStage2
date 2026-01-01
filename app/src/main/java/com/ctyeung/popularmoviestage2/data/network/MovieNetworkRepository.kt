@@ -55,7 +55,7 @@ class MovieNetworkRepository @Inject constructor(
 
     private suspend fun onMovies(movies: List<Movie>) {
         /* don't delete nor replaced favorites */
-        db.deleteNonFavorites()
+        //db.deleteNonFavorites()
         movies.forEach { m ->
             val hasIt = db.retrieve(m.title)
             hasIt?.let {

@@ -23,6 +23,10 @@ class MovieRepository @Inject constructor(
         movieDao.insert(movie)
     }
 
+    suspend fun update(favorite: Boolean, title:String) {
+        movieDao.update(favorite,title)
+    }
+
     suspend fun dropTable() {
         movieDao.deleteAll()
     }

@@ -12,7 +12,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         android:fitsSystemWindows="true">
 
@@ -20,7 +20,7 @@
             android:id="@+id/toolbar"
             app:title="@string/app_name"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
+            android:layout_height="wrap_content" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -69,15 +69,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp" />
-
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/btnFavorite"
-                        android:text="@string/mark_as_favorite"
-                        android:padding="3dp"
-                        android:layout_marginTop="10dp"
-                        android:background="#8888aa"/>
 
                 </LinearLayout>
 

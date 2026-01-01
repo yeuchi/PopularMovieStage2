@@ -97,8 +97,7 @@ class DetailViewModel @Inject constructor(
     fun selectFavorite() {
         viewModelScope.launch(IO) {
             movie?.apply {
-                isFavorite = !isFavorite
-                db.insert(this)
+                db.update(this.isFavorite, this.originalTitle)
             }
         }
     }

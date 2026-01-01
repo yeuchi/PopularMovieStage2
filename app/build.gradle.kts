@@ -7,14 +7,14 @@ plugins {
 
 android {
     namespace = "com.ctyeung.popularmoviestage2"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.ctyeung.popularmoviestage2"
         minSdk = 27
-        targetSdk = 34
-        versionCode = 7
-        versionName = "7.0"
+        targetSdk = 35
+        versionCode = 8_0_2
+        versionName = "0.0.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

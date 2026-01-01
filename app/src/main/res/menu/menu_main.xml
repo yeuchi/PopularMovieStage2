@@ -14,10 +14,4 @@
         android:orderInCategory="1"
         android:title="@string/sort_top_rated"
         app:showAsAction="never"/>
-
-    <item
-        android:id="@+id/sort_favorite"
-        android:orderInCategory="1"
-        android:title="@string/sort_favorite"
-        app:showAsAction="never"/>
 </menu>

@@ -21,6 +21,9 @@ interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(movie: Movie)
 
+    @Query("UPDATE movie_table set isFavorite = NOT :favorite WHERE originalTitle = :title")
+    fun update(favorite: Boolean, title:String)
+
     @Query("DELETE FROM movie_table")
      fun deleteAll()
 
