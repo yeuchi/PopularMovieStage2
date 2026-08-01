@@ -15,6 +15,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
+    /** TODO
+     * Apply edgeToedge
+     * https://developer.android.com/develop/ui/views/layout/edge-to-edge
+     */
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val db: MovieRepository,

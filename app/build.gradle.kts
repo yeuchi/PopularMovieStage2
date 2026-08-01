@@ -7,14 +7,14 @@ plugins {
 
 android {
     namespace = "com.ctyeung.popularmoviestage2"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.ctyeung.popularmoviestage2"
         minSdk = 27
-        targetSdk = 35
-        versionCode = 8_0_2
-        versionName = "0.0.2"
+        targetSdk = 37
+        versionCode = 8_0_4
+        versionName = "0.0.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -29,11 +29,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
     buildFeatures {
         viewBinding = true
@@ -44,10 +44,10 @@ android {
 dependencies {
     implementation("com.squareup.picasso:picasso:2.8")
 
-    implementation("com.google.dagger:hilt-android:2.48")
+    implementation("com.google.dagger:hilt-android:2.60.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.60.1")
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    kapt("com.google.dagger:hilt-android-compiler:2.48")
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
